@@ -33,7 +33,7 @@ async function request<T>(
   const result: Result<T> = await res.json();
 
   // 业务不成功（你的 Result 里的 ok 判断）
-  if (result.code !== "00000") {
+  if (result.code !== "2000") {
     throw new Error(result.message || "业务处理失败");
   }
 
