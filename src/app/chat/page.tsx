@@ -44,8 +44,13 @@ export default function ChatPage() {
     setTyping(true);
 
     try {
+      const sessionId = "demo-session";  // 示例 sessionId
       // 🔥 调用代理api
-      const reply = await httpGet<string>("api/proxy/chat"+"?userMessage=" + encodeURIComponent(input));
+      const reply = await httpPost<string>("/api/proxy/chat", {
+            sessionId,
+            userMessage: input,
+          });
+
       const agentMessage: ChatMessage = {
         role: "agent",
         content: reply,

@@ -13,45 +13,33 @@ export interface Result<T> {
  */
 async function request<T>(
   url: string,
-  options: RequestInit = {},
-  timeout = 8000 // 默认 8 秒
+  options: RequestInit = {}
 ): Promise<T> {
-  const controller = new AbortController();
-  const id = setTimeout(() => controller.abort(), timeout);
 
-  try {
-    const res = await fetch(url, {
-      cache: "no-store",
-      signal: controller.signal,
-      headers: {
-        "Content-Type": "application/json",
-        ...(options.headers || {}),
-      },
-      ...options,
-    });
+  const res = await fetch(url, {
+    cache: "no-store",
+    headers: {
+      "Content-Type": "application/json",
+      ...(options.headers || {}),
+    },
+    ...options,
+  });
 
-    if (!res.ok) {
-      throw new Error(`HTTP错误: ${res.status}`);
-    }
-
-    const result: Result<T> = await res.json();
-
-    if (result.code !== "2000") {
-      throw new Error(result.message || "业务处理失败");
-    }
-
-    return result.data;
-
-  } catch (err: any) {
-    if (err.name === "AbortError") {
-      throw new Error("请求超时，请稍后再试");
-    }
-    throw err;
-
-  } finally {
-    clearTimeout(id);
+  // HTTP 层
+  if (!res.ok) {
+    throw new Error(`HTTP错误: ${res.status}`);
   }
+
+  // 业务层
+  const result: Result<T> = await res.json();
+
+  if (result.code !== "2000") {
+    throw new Error(result.message || "业务处理失败");
+  }
+
+  return result.data;
 }
+
 
 
 /**
