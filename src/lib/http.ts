@@ -13,33 +13,46 @@ export interface Result<T> {
  */
 async function request<T>(
   url: string,
-  options: RequestInit = {}
+  options: RequestInit = {},
+  timeout = 8000 // 默认 8 秒
 ): Promise<T> {
-  const res = await fetch(url, {
-    cache: "no-store",
-    headers: {
-      "Content-Type": "application/json",
-      ...(options.headers || {}),
-    },
-    ...options,
-  });
+  const controller = new AbortController();
+  const id = setTimeout(() => controller.abort(), timeout);
 
-  // 第一层：HTTP 层错误（服务器挂了、404、跨域等）
-  if (!res.ok) {
-    throw new Error(`HTTP错误: ${res.status}`);
+  try {
+    const res = await fetch(url, {
+      cache: "no-store",
+      signal: controller.signal,
+      headers: {
+        "Content-Type": "application/json",
+        ...(options.headers || {}),
+      },
+      ...options,
+    });
+
+    if (!res.ok) {
+      throw new Error(`HTTP错误: ${res.status}`);
+    }
+
+    const result: Result<T> = await res.json();
+
+    if (result.code !== "2000") {
+      throw new Error(result.message || "业务处理失败");
+    }
+
+    return result.data;
+
+  } catch (err: any) {
+    if (err.name === "AbortError") {
+      throw new Error("请求超时，请稍后再试");
+    }
+    throw err;
+
+  } finally {
+    clearTimeout(id);
   }
-
-  // 第二层：解析业务层响应 Result<T>
-  const result: Result<T> = await res.json();
-
-  // 业务不成功（你的 Result 里的 ok 判断）
-  if (result.code !== "2000") {
-    throw new Error(result.message || "业务处理失败");
-  }
-
-  // 返回真正的数据
-  return result.data;
 }
+
 
 /**
  * GET 请求

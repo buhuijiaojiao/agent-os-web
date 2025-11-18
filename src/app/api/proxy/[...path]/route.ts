@@ -1,16 +1,18 @@
 import { NextRequest, NextResponse } from "next/server";
 
-const BACKEND_URL = "http://localhost:8090";
+const BACKEND_URL = process.env.BACKEND_JAVA_URL;
+const DEBUG_PROXY = process.env.DEBUG_PROXY === "true";
+
+if (!BACKEND_URL) {
+  throw new Error("未配置 BACKEND_JAVA_URL，请在 .env 文件中设置。");
+}
 
 export async function handler(req: NextRequest) {
   const { pathname, search } = req.nextUrl;
 
-  // 去掉 /api/proxy 前缀，获取真实后端路径
   const backendPath = pathname.replace(/^\/api\/proxy/, "");
-
-  // 构造目标 URL
   const targetUrl = BACKEND_URL + backendPath + search;
-  // 构造 fetch 配置
+
   const fetchOptions: RequestInit = {
     method: req.method,
     headers: {
@@ -18,9 +20,12 @@ export async function handler(req: NextRequest) {
     },
   };
 
-  // 支持 POST/PUT/PATCH body
   if (["POST", "PUT", "PATCH"].includes(req.method)) {
     fetchOptions.body = await req.text();
+  }
+
+  if (DEBUG_PROXY) {
+    console.log(`[Proxy] ${req.method} ${targetUrl}`);
   }
 
   try {
@@ -39,7 +44,6 @@ export async function handler(req: NextRequest) {
   }
 }
 
-// Next.js 要求导出方法名对应 HTTP 方法
 export const GET = handler;
 export const POST = handler;
 export const PUT = handler;
