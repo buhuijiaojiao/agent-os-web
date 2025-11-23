@@ -1,121 +1,112 @@
-# 🧠 Agent OS Web
+#  Agent OS: 个人数字生态的操作系统
 
-**你的个人操作系统 · Your Personal Operating System**
+**【核心目标】** 打造一个 24/7 在线、可自我进化的、**能代替你工作**的数字分身。
 
-Agent OS Web 是一个聚合「个人主页、数字分身、自动化工作站」的统一平台。
-它不仅是一个网站，更是一个围绕你构建的 **数字中枢系统（Digital Core）**。
+Agent OS 是围绕你的个人偏好、知识、语言风格构建的 **数字中枢系统 (Digital Core)**。它将前端工作站与强大的 Java 后端和 AI 智能体执行层无缝集成。
 
----
+-----
 
-## 🚀 项目愿景
+## I. 🌌 愿景与核心价值 (Vision & Value)
 
-打造一个 **24 小时在线、可进化、可扩展** 的个人数字宇宙——
-既能作为对外展示的 **个人站点**，
-又能作为你自己使用的 **工作控制台（Dashboard）**，
-还能够作为 **数字分身（AI Agent）** 的运行平台。
+Agent OS 的目标是提供 **单点统一管理** 的能力，将你的内容、自动化流程和数字人格聚合到一个平台。
 
-一句话：
-**让你的所有事务、内容、自动化能力，都通过一个入口统一管理。**
+> **一句话总结:**
+> **Agent OS = 你的数字分身 + 你的工作控制台 + 你的个人 Web 入口。**
 
----
+### 🎯 核心使命
 
-## ✨ 核心特性（建设中）
+| 方面 | 描述 |
+| :--- | :--- |
+| **自我智能体 (Self-Agent)** | 理解你的**人格、偏好和决策风格**，能代表你与外界交流。 |
+| **持久进化 (Sustainable Evolution)** | 通过持续的交互和日志，实现个人 AI 模型的不断优化与迭代。 |
+| **可执行架构 (Executable Architecture)** | 通过 **MCP 服务 (Multi-Component Processing)** 扩展行动力，真正地执行复杂任务。 |
 
-### 🔹 个人主页（Public）
+-----
 
-* 简洁清晰的首页
-* 博客 / 文章系统
-* 对外开放的 AI 聊天窗口（访客与数字分身对话）
+## II. ✨ 模块与能力 (Modules & Capabilities)
 
-### 🔹 工作站 Dashboard（Internal）
+Agent OS 被设计为一套双重模式系统：对外展示 **(Public)** 和内部控制 **(Internal)**。
 
-* 可扩展的后台布局（Sidebar + Main）
-* 工具管理（Tools）
-* 自动化任务中心（Tasks）
-* 记忆 / 知识库（Memory）
-* 系统设置（Settings）
-* Agent 的行为日志与观察面板
+### 🔹 工作站模式 (Dashboard - Internal)
 
-### 🔹 数字分身（AI Agent）
+这是你的**工程级控制中心**，用于管理和监控你的数字资产。
 
-* 你的行业经验、人格、决策风格
-* 可插件化扩展的行动能力
-* 能通过 MCP / API 执行实际任务
-* 可与访客自由交流，也可处理你的工作事务
+  * **Agent Hub (智能体中心):** 配置、优化和维护你的 **Self-Agent** 及其工具集。
+  * **Chat 工作台:** 基于 `@MemoryId` 的会话记忆和持久化，进行高效率任务沟通。
+  * **任务编排器 (Orchestrator):** (未来) 构建和监控多 Agent 协作的工作流。
+  * **知识库 / 记忆系统:** 管理长期记忆和结构化知识。
 
----
+### 🔹 公开站点模式 (Public Site)
 
-## 🧩 技术栈
+对外展示你的数字人格和内容。
 
-### 前端
+  * **AI 代理入口:** 访客可以直接与你的数字分身对话，代表你进行首次接触和筛选。
+  * **个人内容系统:** 清晰、专业的博客/文章系统。
 
-* **Next.js 16** — App Router 架构
-* **Tailwind CSS v4** — 现代化样式系统
-* **shadcn/ui** — 可组合、可维护、极简美观的 UI 组件集
-* **TypeScript** — 类型安全
+-----
 
-### 后端（可选）
+## III. 🧩 工程架构与技术栈 (Engineering Stack)
 
-视你的需求扩展：
+我们采用前后端分离的**可扩展微服务架构**，以支持灵活的模型替换和工具集成。
 
-* Java / Spring Boot（任务执行层、工具层）
-* Node.js（轻量功能、Agent工具）
-* MCP 工具（Python / Node / Java 均可）
+| 层级 | 技术栈 | 角色和关键组件 |
+| :--- | :--- | :--- |
+| **前端 (UI/UX)** | **Next.js 16 (App Router)**  + **shadcn/ui** | **工作站 UI** 实现、前后端代理 (`Next.js API Route`)。 |
+| **后端 (Core/Logic)** | **Java + Spring Boot** + **LangChain4j** | 核心业务逻辑、**AgentCore Service**、任务执行、工具调度。 |
+| **AI 智能体** | **自定义 SelfAgent** (`@MemoryId` 增强) | 封装人格 Prompt、会话记忆、工具调用逻辑。 |
+| **部署与工具** | **MCP Services** (Java/Python/Node) | 可插拔的扩展系统，执行 Google Search, Calendar 等实际操作。 |
 
----
+-----
 
-## 📁 当前结构（精简示例）
+## IV. 📁 项目结构（前端部分）
+
+目前的前端结构聚焦于核心模块的快速搭建：
 
 ```
-src/
-  app/
-    layout.tsx            # 全局布局（导航）
-    page.tsx              # 首页
-    chat/                 # AI 聊天
-    blog/                 # 博客
-    dashboard/            # 工作站
-      layout.tsx
-      page.tsx
-      tools/
-      tasks/
-      memory/
-      settings/
-  components/
-  lib/
-  styles/
+agent-os-web/
+├── app/
+│   ├── (main)/           # 主工作区布局
+│   ├── agents/           # Agent Hub (配置)
+│   ├── chat/             # Chat 工作台 (使用)
+│   ├── blog/             # 博客系统
+│   └── ...
+├── components/
+│   ├── ui/               # shadcn/ui 组件
+│   ├── layout/           # SideNav, Header
+│   ├── agents/           # AgentCard, AgentDetailsSheet
+│   └── chat/             # ChatSidebar, ChatArea
+└── lib/                  # 工具函数、API 代理配置
 ```
 
----
+-----
 
-## 🛠 开发指令
+## V. 🛠 快速启动
 
 ```bash
+# 依赖安装
 pnpm install
+
+# 启动开发服务器
 pnpm dev
 ```
 
-访问：
-[http://localhost:3000](http://localhost:3000)
+**访问:** [http://localhost:3000](https://www.google.com/search?q=http://localhost:3000)
 
----
+-----
 
-## 🌌 未来规划
+## VI. 🔮 未来路线图 (Roadmap)
 
-* 插件化（Tools）体系
-* 任务调度引擎
-* 可执行工作流（Workflows / Pipelines）
-* Agent 多人格配置
-* 长期记忆（Memory）
-* 本地模型 / 自部署模型接入
-* 更加智能的“数字自我”
+Agent OS 致力于持续进化，下一阶段将集中在 **后端能力和复杂调度** 上：
 
----
+  * **长期记忆系统 (LTM):** 集成数据库，实现会话持久化和知识向量化。
+  * **插件与工具体系 (MCP):** 完整的工具注册和权限管理机制。
+  * **工作流编排:** 实现 Agent 间的串行/并行任务调度。
+  * **模型可替换架构:** 支持本地 LLM 或定制化模型无缝接入。
 
-## 📬 关于项目
+-----
 
-Agent OS Web 是一个个人探索项目，旨在构建一个 **能替你思考、替你行动、替你管理数字生活** 的系统。
-它不是一个展示品，而是一个会持续进化的「个人数字生物」。
+## 🫂 关于项目
 
-**Your mind. Your agent. Your OS.**
+Agent OS 是你与未来 AI 协作模式的桥梁。它是一个工程级探索，旨在将你的数字生活抽象为一个完整的操作系统。
 
-
+**Your mind. Your agent. Your OS. Your Future.**
