@@ -2,12 +2,18 @@
 
 import Link from "next/link";
 import { cn } from "@/lib/utils";
-import { Home, MessageSquare, Book, LayoutDashboard, Settings } from "lucide-react";
+import {
+  Home,
+  MessageSquare,
+  Book,
+  Bot
+} from "lucide-react";
 
 export function AppSidebar() {
   const nav = [
     { label: "Home", href: "/", icon: Home },
     { label: "Chat", href: "/chat", icon: MessageSquare },
+    { label: "Agent-Hub", href: "/agent-hub", icon: Bot },
     { label: "Blog", href: "/blog", icon: Book },
   ];
 
