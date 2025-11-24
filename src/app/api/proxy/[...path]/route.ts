@@ -24,23 +24,33 @@ export async function handler(req: NextRequest) {
     fetchOptions.body = await req.text();
   }
 
-  if (DEBUG_PROXY) {
-    console.log(`[Proxy] ${req.method} ${targetUrl}`);
-  }
-
   try {
     const res = await fetch(targetUrl, fetchOptions);
     const data = await res.json();
+    //代码执行到此处说明代理请求成功
+    if (DEBUG_PROXY) {
+      console.log(`[DEBUG:Proxy success] ${req.method} ${targetUrl}`);
+    }
     return NextResponse.json(data);
-  } catch (e: any) {
-    return NextResponse.json(
-      {
-        code: "500",
-        message: "代理请求失败: " + e.message,
-        data: null,
-      },
-      { status: 500 }
-    );
+  } catch (e: unknown) {
+    //代码执行到此处说明代理请求失败
+    if (e instanceof Error ) {
+      if (DEBUG_PROXY) {
+        console.log(
+          `[DEBUG:Proxy error] ${req.method} ${targetUrl} - ${e.message}`
+        );
+      }
+       return NextResponse.json({
+         message: "代理请求失败:" + e.message
+       });
+    } else {
+      if (DEBUG_PROXY) {
+        console.log(`[DEBUG:Proxy error] ${req.method} ${targetUrl} - 未知错误`);
+      }
+      return NextResponse.json({
+        message: "代理未知错误"
+      });
+    }
   }
 }
 

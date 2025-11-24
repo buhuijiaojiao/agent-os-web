@@ -1,3 +1,4 @@
+// app/chat/page.tsx
 "use client";
 
 import { useState } from "react";
@@ -19,9 +20,11 @@ export default function ChatPage() {
   ]);
   const [typing, setTyping] = useState(false);
 
-  const sessionId = "demo-session"; // 先用固定值；接数据库后替换为选中的会话ID
+  const sessionId = "demo-session";
 
   async function sendMessage(content: string) {
+    if (!content.trim()) return;
+
     setMessages((prev) => [...prev, { role: "user", content }]);
     setTyping(true);
 
@@ -30,6 +33,7 @@ export default function ChatPage() {
         sessionId,
         userMessage: content,
       });
+
       setMessages((prev) => [...prev, { role: "agent", content: reply }]);
     } catch (err: any) {
       setMessages((prev) => [
@@ -42,14 +46,22 @@ export default function ChatPage() {
   }
 
   return (
-    <div className="flex flex-col h-full px-6 py-6 space-y-4 overflow-hidden">
-      <h1 className="text-2xl font-bold">聊天</h1>
+    // 继承 layout 的高度，内部再做垂直布局
+    <div className="flex flex-col h-full min-h-0">
+      {/* Header */}
+      <header className="px-6 py-4 border-b border-border bg-background/80 backdrop-blur">
+        <h1 className="text-xl font-semibold">Chat</h1>
+      </header>
 
-      <div className="flex-1 overflow-hidden">
+      {/* Body：消息区域，自己滚动 */}
+      <div className="flex-1 min-h-0">
         <ChatMessages messages={messages} typing={typing} />
       </div>
 
-      <ChatInput onSend={sendMessage} />
+      {/* Footer：输入框固定在底部 */}
+      <div className="border-t border-border p-4 bg-background">
+        <ChatInput onSend={sendMessage} disabled={typing} />
+      </div>
     </div>
   );
 }

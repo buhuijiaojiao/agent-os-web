@@ -1,13 +1,9 @@
+// AppSidebar.tsx
 "use client";
 
 import Link from "next/link";
 import { cn } from "@/lib/utils";
-import {
-  Home,
-  MessageSquare,
-  Book,
-  Bot
-} from "lucide-react";
+import { Home, MessageSquare, Book, LibraryBig, Bot, Logs } from "lucide-react";
 
 export function AppSidebar() {
   const nav = [
@@ -15,13 +11,15 @@ export function AppSidebar() {
     { label: "Chat", href: "/chat", icon: MessageSquare },
     { label: "Agent-Hub", href: "/agent-hub", icon: Bot },
     { label: "Blog", href: "/blog", icon: Book },
+    { label: "Log", href: "/log", icon: Logs },
+    { label: "Knowledge-Base", href: "/knowledge-base", icon: LibraryBig },
   ];
 
   return (
     <aside
       className={cn(
-        "fixed inset-y-0 left-0 w-60 border-r bg-sidebar text-sidebar-foreground",
-        "flex flex-col py-6 px-3 z-40"
+        "w-60 border-r bg-sidebar text-sidebar-foreground",
+        "flex flex-col py-6 px-3"
       )}
     >
       <div className="text-xl font-semibold px-3 mb-6">Agent OS</div>
@@ -47,10 +45,7 @@ export function AppSidebar() {
 
       <div className="flex-1" />
 
-      {/* 未来可以放：用户头像、状态、版本号 */}
-      <div className="px-3 text-xs text-muted-foreground">
-        v0.1.0
-      </div>
+      <div className="px-3 text-xs text-muted-foreground">v0.1.0</div>
     </aside>
   );
 }
