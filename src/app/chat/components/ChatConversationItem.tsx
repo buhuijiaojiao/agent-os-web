@@ -1,17 +1,18 @@
-// app/chat/components/ChatSessionItem.tsx
+// app/chat/components/ChatConversationItem.tsx
 import { cn } from "@/lib/utils";
 
-interface ChatSessionItemProps {
-  session: { id: string; title: string };
+interface ConversationItemProps {
+  conversation: { id: string; title: string };
   active: boolean;
   onClick: () => void;
 }
 
-export default function ChatSessionItem({
-  session,
+// FIX: 导出组件名已更改
+export default function ChatConversationItem({
+  conversation,
   active,
   onClick,
-}: ChatSessionItemProps) {
+}: ConversationItemProps) {
   return (
     <button
       type="button"
@@ -23,7 +24,7 @@ export default function ChatSessionItem({
           : "bg-background hover:bg-accent hover:text-accent-foreground"
       )}
     >
-      <span className="truncate block">{session.title}</span>
+      <span className="truncate block">{conversation.title}</span>
     </button>
   );
 }

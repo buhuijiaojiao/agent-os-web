@@ -1,6 +1,6 @@
 // app/chat/layout.tsx
 import React from "react";
-import ChatSessionList from "./components/ChatSessionList";
+import ChatConversationList from "./components/ChatConversationList";
 
 export default function ChatLayout({
   children,
@@ -13,7 +13,7 @@ export default function ChatLayout({
     <div className="flex h-full min-h-0 bg-background rounded-xl border shadow-sm overflow-hidden">
       {/* 左：会话列表 */}
       <aside className="w-64 shrink-0 border-r bg-muted/30 flex flex-col min-h-0 overflow-hidden">
-        <ChatSessionList />
+        <ChatConversationList />
       </aside>
 
       {/* 右：聊天内容区域（交给 page.tsx 再细分垂直结构） */}

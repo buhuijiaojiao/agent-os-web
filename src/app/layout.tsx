@@ -1,10 +1,18 @@
 // app/layout.tsx
 import "./globals.css";
-import { Inter } from "next/font/google";
+import localFont from "next/font/local";
 import { AppSidebar } from "@/components/layout/AppSidebar";
 import { AppTopBar } from "@/components/layout/AppTopBar";
 
-const inter = Inter({ subsets: ["latin"] });
+const jetBrainsMono = localFont({
+  // 路径是相对于 app/layout.tsx 的相对路径
+  src: "../fonts/JetBrains_Mono/static/JetBrainsMono-Regular.ttf",
+
+  // 明确指定该字体文件的权重和样式，以确保浏览器正确映射
+  weight: "400",
+  style: "normal",
+  display: "swap",
+});
 
 export const metadata = {
   title: "Agent OS Web",
@@ -25,7 +33,7 @@ export default function RootLayout({
         - flex：两栏主结构：Sidebar + Main
       */}
       <body
-        className={`${inter.className} flex h-screen overflow-hidden bg-background`}
+        className={`${jetBrainsMono.className} flex h-screen overflow-hidden bg-background`}
       >
         {/* 左侧固定 Sidebar（非 fixed，不遮挡内容） */}
         <AppSidebar />

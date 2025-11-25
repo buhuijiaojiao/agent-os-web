@@ -1,21 +1,27 @@
-// app/chat/components/ChatSessionList.tsx
+// app/chat/components/ChatConversationList.tsx
 "use client";
 
 import { useState } from "react";
 import { Plus } from "lucide-react";
-import ChatSessionItem from "./ChatSessionItem";
+import ChatConversationItem from "./ChatConversationItem";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { Button } from "@/components/ui/button";
 
-export default function ChatSessionList() {
-  const [sessions, setSessions] = useState([
+interface Conversation {
+  id: string;
+  title: string;
+}
+
+export default function ChatConversationList() {
+  const [conversations, setConversations] = useState<Conversation[]>([
     { id: "default", title: "默认会话" },
   ]);
   const [current, setCurrent] = useState("default");
 
-  function createSession() {
+  function createConversation() {
+    //点击新建会话按钮逻辑
     const id = crypto.randomUUID();
-    setSessions((prev) => [...prev, { id, title: "新建会话" }]);
+    setConversations((prev) => [...prev, { id, title: "新建会话" }]);
     setCurrent(id);
   }
 
@@ -28,7 +34,7 @@ export default function ChatSessionList() {
           size="icon"
           variant="outline"
           className="h-7 w-7"
-          onClick={createSession}
+          onClick={createConversation}
         >
           <Plus className="w-4 h-4" />
         </Button>
@@ -37,12 +43,12 @@ export default function ChatSessionList() {
       {/* 列表滚动区域 */}
       <ScrollArea className="flex-1 px-3 py-3">
         <div className="space-y-2">
-          {sessions.map((s) => (
-            <ChatSessionItem
-              key={s.id}
-              session={s}
-              active={s.id === current}
-              onClick={() => setCurrent(s.id)}
+          {conversations.map((c) => (
+            <ChatConversationItem
+              key={c.id}
+              conversation={c}
+              active={c.id === current}
+              onClick={() => setCurrent(c.id)}
             />
           ))}
         </div>

@@ -49,7 +49,7 @@ export default function ChatPage() {
     // 继承 layout 的高度，内部再做垂直布局
     <div className="flex flex-col h-full min-h-0">
       {/* Header */}
-      <header className="px-6 py-4 border-b border-border bg-background/80 backdrop-blur">
+      <header className="px-6 py-3 border-b border-border bg-background/80 backdrop-blur">
         <h1 className="text-xl font-semibold">Chat</h1>
       </header>
 
