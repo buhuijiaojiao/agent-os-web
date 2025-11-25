@@ -13,6 +13,7 @@ export function AppSidebar() {
     { label: "Blog", href: "/blog", icon: Book },
     { label: "Log", href: "/log", icon: Logs },
     { label: "Knowledge-Base", href: "/knowledge-base", icon: LibraryBig },
+    { label: "Login(获取token)", href: "/login", icon: Logs },
   ];
 
   return (

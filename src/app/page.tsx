@@ -47,6 +47,16 @@ export default function Home() {
             Write, refine and publish blog posts assisted by AI.
           </p>
         </a>
+        <a
+          href="/login"
+          className="group p-6 rounded-xl border bg-card hover:shadow-md transition 
+                     hover:border-accent cursor-pointer"
+        >
+          <h2 className="text-lg font-semibold mb-2">login(dev)</h2>
+          <p className="text-sm text-muted-foreground leading-relaxed">
+            dev登录页面
+          </p>
+        </a>
       </section>
     </div>
   );
