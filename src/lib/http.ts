@@ -11,17 +11,23 @@ export interface Result<T> {
 /**
  * HTTP 基础请求方法
  */
-async function request<T>(
-  url: string,
-  options: RequestInit = {}
-): Promise<T> {
+async function request<T>(url: string, options: RequestInit = {}): Promise<T> {
+  const token = localStorage.getItem("authToken");
+
+  // 基础 headers 包含 Content-Type
+  const headers: HeadersInit = {
+    "Content-Type": "application/json",
+    ...(options.headers || {}),
+  };
+
+  // 携带 Token 添加到 Authorization 头部
+  if (token) {
+    headers["Authorization"] = `Bearer ${token}`; // 标准格式：Bearer + Token
+  }
 
   const res = await fetch(url, {
     cache: "no-store",
-    headers: {
-      "Content-Type": "application/json",
-      ...(options.headers || {}),
-    },
+    headers, // 使用最终 Headers
     ...options,
   });
 
@@ -40,13 +46,10 @@ async function request<T>(
   return result.data;
 }
 
-
-
 /**
  * GET 请求
  */
-export const httpGet = <T>(url: string) =>
-  request<T>(url, { method: "GET" });
+export const httpGet = <T>(url: string) => request<T>(url, { method: "GET" });
 
 /**
  * POST 请求

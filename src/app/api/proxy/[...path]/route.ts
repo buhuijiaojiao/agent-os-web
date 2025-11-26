@@ -17,6 +17,7 @@ export async function handler(req: NextRequest) {
     method: req.method,
     headers: {
       "Content-Type": req.headers.get("Content-Type") || "application/json",
+      "Authorization": req.headers.get("Authorization") || "",
     },
   };
 
