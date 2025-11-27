@@ -64,7 +64,7 @@ export default function LoginPage() {
         // 1. 使用封装后的 httpPost 发送登录请求
         // 捕获的任何 Error.message 都会是后端返回的业务错误信息，或者 HTTP 错误信息。
         const token = await httpPost<LoginVo>(
-          "/api/proxy/doLogin",
+          "/api/proxy/user/doLogin",
           loginPayload
         );
 
