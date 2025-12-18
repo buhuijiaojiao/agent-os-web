@@ -15,18 +15,23 @@ export async function handler(req: NextRequest) {
 
   const fetchOptions: RequestInit = {
     method: req.method,
-    headers: {
-      "Content-Type": req.headers.get("Content-Type") || "application/json",
-      "Authorization": req.headers.get("Authorization") || "",
-    },
+    headers: req.headers,
+    // {
+    //   "Content-Type": req.headers.get("Content-Type") || "application/json",
+    //   "Authorization": req.headers.get("Authorization") || "",
+    // },
   };
 
   if (["POST", "PUT", "PATCH"].includes(req.method)) {
+    // 如果未来支持文件上传，可换成 await req.arrayBuffer()
     fetchOptions.body = await req.text();
   }
 
   try {
-    const res = await fetch(targetUrl, fetchOptions);
+    const res = await fetch(targetUrl, {
+      ...fetchOptions,
+      cache: "no-store",
+    });
     const data = await res.json();
     //代码执行到此处说明代理请求成功
     if (DEBUG_PROXY) {
@@ -41,16 +46,18 @@ export async function handler(req: NextRequest) {
           `[DEBUG:Proxy error] ${req.method} ${targetUrl} - ${e.message}`
         );
       }
-       return NextResponse.json({
-         message: "代理请求失败:" + e.message
-       });
+      return NextResponse.json(
+        { message: "代理请求失败:" + e.message },
+        { status: 502 } // Bad Gateway
+      );
     } else {
       if (DEBUG_PROXY) {
         console.log(`[DEBUG:Proxy error] ${req.method} ${targetUrl} - 未知错误`);
       }
-      return NextResponse.json({
-        message: "代理未知错误"
-      });
+      return NextResponse.json(
+        { message: "代理未知错误" },
+        { status: 502 } 
+      );
     }
   }
 }
