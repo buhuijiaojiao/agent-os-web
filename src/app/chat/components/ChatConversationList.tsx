@@ -13,7 +13,7 @@ import {
   DialogFooter,
 } from "@/components/ui/dialog";
 import { Input } from "@/components/ui/input";
-import { httpGet, httpPost } from "@/lib/http"; // 你自己的工具层
+import { httpGet, httpPost, httpDelete , httpPut} from "@/lib/http"; 
 
 interface Conversation {
   id: number;
@@ -43,7 +43,7 @@ export default function ChatConversationList() {
     }
   }
 
-  /** 新建会话（后端 create） */
+  /** 新建会话 */
   async function createConversation() {
     const newId = await httpPost<number>("/api/proxy/conversation/create", {
       conversationTitle: "新的会话",
@@ -66,17 +66,43 @@ export default function ChatConversationList() {
     setDeleteOpen(true);
   }
 
-  // TODO: 待完善后端接口
-  async function confirmEdit() {
-    console.log("更新会话标题：", editingId, "=>", editValue);
-    setEditOpen(false);
-  }
+async function confirmEdit() {
+  if (!editingId) return;
+
+  await httpPut("/api/proxy/conversation/update", {
+    conversationId: String(editingId),
+    conversationTitle: editValue,
+  });
+
+  setEditOpen(false);
+
+  // 刷新会话列表
+  await loadConversations();
+
+  // 保持当前会话激活
+  setCurrent(editingId);
+}
+
 
   async function confirmDelete() {
-    console.log("删除会话：", deletingId);
+    if (!deletingId) return;
+
+    // 1. 调用后端删除接口
+    await httpDelete(
+      `/api/proxy/conversation/delete?conversationId=${deletingId}`
+    );
+
+    // 2. 关闭弹窗
     setDeleteOpen(false);
+
+    // 3. 重新加载会话列表
+    await loadConversations();
+
+    // 4. 如果当前会话就是被删除的，会自动选中第一项（loadConversations 已处理）
+    if (current === deletingId) {
+      setCurrent(null);
+    }
   }
-  // ↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑ update/delete API
 
   useEffect(() => {
     loadConversations();
