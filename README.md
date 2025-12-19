@@ -1,112 +1,113 @@
-#  Agent OS: 个人数字生态的操作系统
+<div align="center">
 
-**【核心目标】** 打造一个 24/7 在线、可自我进化的、**能代替你工作**的数字分身。
 
-Agent OS 是围绕你的个人偏好、知识、语言风格构建的 **数字中枢系统 (Digital Core)**。它将前端工作站与强大的 Java 后端和 AI 智能体执行层无缝集成。
+# 🚀 agent-os
 
------
+### *Your Personal AI Team Operating System.*
 
-## I. 🌌 愿景与核心价值 (Vision & Value)
+<p align="center">
+  <em>Build, lead, and extend your own AI Agent Team.</em>
+</p>
 
-Agent OS 的目标是提供 **单点统一管理** 的能力，将你的内容、自动化流程和数字人格聚合到一个平台。
 
-> **一句话总结:**
-> **Agent OS = 你的数字分身 + 你的工作控制台 + 你的个人 Web 入口。**
+<p align="center">
+  <a href="#-overview">Overview</a> •
+  <a href="#-what-is-an-agent-team">Agent Team</a> •
+  <a href="#-current-status">Status</a> •
+  <a href="#-tech-stack">Tech Stack</a>
+</p>
 
-### 🎯 核心使命
 
-| 方面 | 描述 |
-| :--- | :--- |
-| **自我智能体 (Self-Agent)** | 理解你的**人格、偏好和决策风格**，能代表你与外界交流。 |
-| **持久进化 (Sustainable Evolution)** | 通过持续的交互和日志，实现个人 AI 模型的不断优化与迭代。 |
-| **可执行架构 (Executable Architecture)** | 通过 **MCP 服务 (Multi-Component Processing)** 扩展行动力，真正地执行复杂任务。 |
+</div>
 
------
+---
 
-## II. ✨ 模块与能力 (Modules & Capabilities)
+## 🌟 Overview
 
-Agent OS 被设计为一套双重模式系统：对外展示 **(Public)** 和内部控制 **(Internal)**。
+> 在大模型能力持续增强的背景下，**个人能力的边界正在迅速模糊**。  
+> 真正的竞争力，不再来自于“一个人能做多少”，  
+> 而是来自于：  
+>
+> **一个人能调动、指挥多强的 AI 团队为自己工作。**
 
-### 🔹 工作站模式 (Dashboard - Internal)
+**agent-os** 正是为此而构建 ——  
+一个让个人拥有并管理 **AI Agent Team** 的操作系统。
 
-这是你的**工程级控制中心**，用于管理和监控你的数字资产。
+它关注的不是单一对话能力，而是：
 
-  * **Agent Hub (智能体中心):** 配置、优化和维护你的 **Self-Agent** 及其工具集。
-  * **Chat 工作台:** 基于 `@MemoryId` 的会话记忆和持久化，进行高效率任务沟通。
-  * **任务编排器 (Orchestrator):** (未来) 构建和监控多 Agent 协作的工作流。
-  * **知识库 / 记忆系统:** 管理长期记忆和结构化知识。
+- 让多个 Agent 像团队成员一样协作  
+- 让任务具备结构、上下文与执行路径  
+- 为“能真正替你做事的 AI”打下工程基础  
 
-### 🔹 公开站点模式 (Public Site)
+---
 
-对外展示你的数字人格和内容。
+## 🧠 What is an Agent Team?
 
-  * **AI 代理入口:** 访客可以直接与你的数字分身对话，代表你进行首次接触和筛选。
-  * **个人内容系统:** 清晰、专业的博客/文章系统。
+在 agent-os 中：
 
------
+- **Agent = AI 团队成员**  
+  具备明确的角色、职责与能力边界
+- **User = Team Leader**  
+  通过自然语言提出目标与任务
+- **System = Coordination Layer**  
+  负责协调不同 Agents 的执行与协作
 
-## III. 🧩 工程架构与技术栈 (Engineering Stack)
+agent-os 的目标是构建一个 **可扩展、可演进的 Agent 协作模型**，  
+而不是一个简单的聊天助手。
 
-我们采用前后端分离的**可扩展微服务架构**，以支持灵活的模型替换和工具集成。
+---
 
-| 层级 | 技术栈 | 角色和关键组件 |
-| :--- | :--- | :--- |
-| **前端 (UI/UX)** | **Next.js 16 (App Router)**  + **shadcn/ui** | **工作站 UI** 实现、前后端代理 (`Next.js API Route`)。 |
-| **后端 (Core/Logic)** | **Java + Spring Boot** + **LangChain4j** | 核心业务逻辑、**AgentCore Service**、任务执行、工具调度。 |
-| **AI 智能体** | **自定义 SelfAgent** (`@MemoryId` 增强) | 封装人格 Prompt、会话记忆、工具调用逻辑。 |
-| **部署与工具** | **MCP Services** (Java/Python/Node) | 可插拔的扩展系统，执行 Google Search, Calendar 等实际操作。 |
+## 📦 Current Status
 
------
+agent-os 目前处于早期工程阶段，重点在于打好系统基础：
 
-## IV. 📁 项目结构（前端部分）
+- ✔ 会话系统（创建 / 更新 / 删除）
+- ✔ 前端 UI 基础结构（Next.js + shadcn/ui）
+- ✔ 请求与代理层（Next API → Java 后端）
+- ✔ HTTP 工具封装（统一后端返回结构）
+- ⏳ 消息系统（开发中）
+- ⏳ 基础任务模型（设计中）
+- ⏳ Agent 角色体系（规划中）
 
-目前的前端结构聚焦于核心模块的快速搭建：
+项目以 **长期可扩展性** 为目标，稳步推进，而非一次性堆叠功能。
 
-```
-agent-os-web/
-├── app/
-│   ├── (main)/           # 主工作区布局
-│   ├── agents/           # Agent Hub (配置)
-│   ├── chat/             # Chat 工作台 (使用)
-│   ├── blog/             # 博客系统
-│   └── ...
-├── components/
-│   ├── ui/               # shadcn/ui 组件
-│   ├── layout/           # SideNav, Header
-│   ├── agents/           # AgentCard, AgentDetailsSheet
-│   └── chat/             # ChatSidebar, ChatArea
-└── lib/                  # 工具函数、API 代理配置
-```
+---
 
------
+## 🛠 Tech Stack
 
-## V. 🛠 快速启动
+- **Next.js** — Web application framework  
+- **shadcn/ui** — UI component system  
+- **Java + Spring** — Backend services  
+- **TypeScript**  
+- **REST API / Proxy Layer**
 
-```bash
-# 依赖安装
-pnpm install
+---
 
-# 启动开发服务器
-pnpm dev
-```
+## 📌 Project Goals
 
-**访问:** [http://localhost:3000](https://www.google.com/search?q=http://localhost:3000)
+- 构建以个人为中心的 AI Agent Team 系统
+- 支持任务驱动，而不仅是对话响应
+- 为未来的 Agent 协作与工具执行提供清晰结构
+- 保持系统简洁、可控、可演进
 
------
+---
 
-## VI. 🔮 未来路线图 (Roadmap)
+## 🤝 Contribute
 
-Agent OS 致力于持续进化，下一阶段将集中在 **后端能力和复杂调度** 上：
+项目仍处于早期阶段，暂未开放正式贡献流程。  
+后续将通过 Issue / PR 的方式逐步引入社区参与。
 
-  * **长期记忆系统 (LTM):** 集成数据库，实现会话持久化和知识向量化。
-  * **插件与工具体系 (MCP):** 完整的工具注册和权限管理机制。
-  * **工作流编排:** 实现 Agent 间的串行/并行任务调度。
-  * **模型可替换架构:** 支持本地 LLM 或定制化模型无缝接入。
+---
 
------
+## 📄 License
 
-## 🫂 关于项目
+TBD
 
-Agent OS 是你与未来 AI 协作模式的桥梁。它是一个工程级探索，旨在将你的数字生活抽象为一个完整的操作系统。
+---
 
-**Your mind. Your agent. Your OS. Your Future.**
+<div align="center">
+
+
+**agent-os is just getting started.**
+
+</div>
