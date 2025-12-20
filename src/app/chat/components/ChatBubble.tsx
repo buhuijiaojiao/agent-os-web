@@ -4,9 +4,10 @@ import { User, Bot } from "lucide-react";
 import { Avatar, AvatarFallback } from "@/components/ui/avatar";
 
 interface ChatBubbleProps {
-  role: "user" | "agent";
+  role: "user" | "assistant";
   content: string;
 }
+
 
 export default function ChatBubble({ role, content }: ChatBubbleProps) {
   const isUser = role === "user";

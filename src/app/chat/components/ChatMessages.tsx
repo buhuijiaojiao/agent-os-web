@@ -6,9 +6,10 @@ import ChatBubble from "./ChatBubble";
 import { ScrollArea } from "@/components/ui/scroll-area";
 
 interface ChatMessagesProps {
-  messages: { role: "user" | "agent"; content: string }[];
+  messages: { id: number; role: "user" | "assistant"; content: string }[];
   typing: boolean;
 }
+
 
 export default function ChatMessages({ messages, typing }: ChatMessagesProps) {
   const bottomRef = useRef<HTMLDivElement | null>(null);
@@ -20,8 +21,8 @@ export default function ChatMessages({ messages, typing }: ChatMessagesProps) {
   return (
     <ScrollArea className="h-full w-full">
       <div className="px-4 py-4 space-y-4">
-        {messages.map((m, idx) => (
-          <ChatBubble key={idx} role={m.role} content={m.content} />
+        {messages.map((m) => (
+          <ChatBubble key={m.id} role={m.role} content={m.content} />
         ))}
 
         {typing && (

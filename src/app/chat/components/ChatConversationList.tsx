@@ -13,94 +13,81 @@ import {
   DialogFooter,
 } from "@/components/ui/dialog";
 import { Input } from "@/components/ui/input";
-import { httpGet, httpPost, httpDelete , httpPut} from "@/lib/http"; 
+import { httpGet, httpPost, httpDelete, httpPut } from "@/lib/http";
 
 interface Conversation {
   id: number;
   title: string;
 }
 
-export default function ChatConversationList() {
-  const [conversations, setConversations] = useState<Conversation[]>([]);
-  const [current, setCurrent] = useState<number | null>(null);
+interface Props {
+  current: number | null;
+  onSelect: (id: number) => void;
+}
 
-  // 编辑弹窗
+export default function ChatConversationList({ current, onSelect }: Props) {
+  const [conversations, setConversations] = useState<Conversation[]>([]);
+
   const [editOpen, setEditOpen] = useState(false);
   const [editValue, setEditValue] = useState("");
   const [editingId, setEditingId] = useState<number | null>(null);
 
-  // 删除确认弹窗
   const [deleteOpen, setDeleteOpen] = useState(false);
   const [deletingId, setDeletingId] = useState<number | null>(null);
 
-  /** 查询会话列表 */
   async function loadConversations() {
     const list = await httpGet<Conversation[]>("/api/proxy/conversation/list");
     setConversations(list);
 
     if (!current && list.length > 0) {
-      setCurrent(list[0].id);
+      onSelect(list[0].id);
     }
   }
 
-  /** 新建会话 */
   async function createConversation() {
     const newId = await httpPost<number>("/api/proxy/conversation/create", {
       conversationTitle: "新的会话",
     });
-
     await loadConversations();
-    setCurrent(newId);
+    onSelect(newId);
   }
 
-  /** 打开编辑弹窗 */
   function openEditDialog(conv: Conversation) {
     setEditingId(conv.id);
     setEditValue(conv.title);
     setEditOpen(true);
   }
 
-  /** 打开删除确认弹窗 */
+  async function confirmEdit() {
+    if (!editingId) return;
+
+    await httpPut("/api/proxy/conversation/update", {
+      conversationId: String(editingId),
+      conversationTitle: editValue,
+    });
+
+    setEditOpen(false);
+    await loadConversations();
+    onSelect(editingId);
+  }
+
   function openDeleteDialog(id: number) {
     setDeletingId(id);
     setDeleteOpen(true);
   }
 
-async function confirmEdit() {
-  if (!editingId) return;
-
-  await httpPut("/api/proxy/conversation/update", {
-    conversationId: String(editingId),
-    conversationTitle: editValue,
-  });
-
-  setEditOpen(false);
-
-  // 刷新会话列表
-  await loadConversations();
-
-  // 保持当前会话激活
-  setCurrent(editingId);
-}
-
-
   async function confirmDelete() {
     if (!deletingId) return;
 
-    // 1. 调用后端删除接口
     await httpDelete(
       `/api/proxy/conversation/delete?conversationId=${deletingId}`
     );
 
-    // 2. 关闭弹窗
     setDeleteOpen(false);
-
-    // 3. 重新加载会话列表
     await loadConversations();
 
-    // 4. 如果当前会话就是被删除的，会自动选中第一项（loadConversations 已处理）
     if (current === deletingId) {
-      setCurrent(null);
+      onSelect(null as any);
     }
   }
 
@@ -110,7 +97,6 @@ async function confirmEdit() {
 
   return (
     <>
-      {/* 主 UI */}
       <div className="flex flex-col h-full min-h-0">
         <div className="flex items-center justify-between px-4 py-3 border-b bg-muted/40">
           <h2 className="text-sm font-semibold">历史</h2>
@@ -131,7 +117,7 @@ async function confirmEdit() {
                 key={c.id}
                 conversation={{ id: String(c.id), title: c.title }}
                 active={c.id === current}
-                onClick={() => setCurrent(c.id)}
+                onClick={() => onSelect(c.id)}
                 onEdit={() => openEditDialog(c)}
                 onDelete={() => openDeleteDialog(c.id)}
               />
@@ -140,7 +126,7 @@ async function confirmEdit() {
         </ScrollArea>
       </div>
 
-      {/* 编辑 Dialog */}
+      {/* Dialogs 原样保留 */}
       <Dialog open={editOpen} onOpenChange={setEditOpen}>
         <DialogContent>
           <DialogHeader>
@@ -156,7 +142,6 @@ async function confirmEdit() {
         </DialogContent>
       </Dialog>
 
-      {/* 删除确认 Dialog */}
       <Dialog open={deleteOpen} onOpenChange={setDeleteOpen}>
         <DialogContent>
           <DialogHeader>
