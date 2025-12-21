@@ -46,7 +46,46 @@ export default function ChatConversationPanel({ conversationId }: Props) {
 
   /** 发送消息 */
   async function sendMessage(content: string) {
-    
+    if (!content.trim()) return;
+
+    // 1. 乐观更新：先插入 user 消息
+    const userMsg: Message = {
+      id: Date.now(),
+      role: "user",
+      content,
+    };
+
+    setMessages((prev) => [...prev, userMsg]);
+    setTyping(true);
+
+    try {
+      // 2. 调用后端对话接口
+      const reply = await httpPost<string>("/api/proxy/message/chat", {
+        conversationId,
+        userMessageContent: content,
+      });
+
+      // 3. 插入 assistant 消息
+      const aiMsg: Message = {
+        id: Date.now() + 1,
+        role: "assistant",
+        content: reply,
+      };
+
+      setMessages((prev) => [...prev, aiMsg]);
+    } catch (err: any) {
+      // 4. 错误兜底（也作为 assistant 消息展示）
+      setMessages((prev) => [
+        ...prev,
+        {
+          id: Date.now() + 1,
+          role: "assistant",
+          content: `（请求失败：${err.message ?? "未知错误"}）`,
+        },
+      ]);
+    } finally {
+      setTyping(false);
+    }
   }
 
   return (
