@@ -39,6 +39,15 @@ async function request<T>(url: string, options: RequestInit = {}): Promise<T> {
   // 业务层
   const result: Result<T> = await res.json();
 
+  // ⭐ 统一处理 token 失效
+  if (result.code === "4001") {
+    localStorage.removeItem("authToken");
+    // 跳转登录页（不能用 useRouter，这里是普通函数）
+    window.location.href = "/auth/login";
+    // 中断 Promise 链
+    return Promise.reject(new Error(result.message || "登录状态已失效，请重新登录。"));
+  }
+
   if (result.code !== "2000") {
     throw new Error(result.message || "业务处理失败");
   }

@@ -7,13 +7,12 @@ import { Home, MessageSquare, Book, LibraryBig, Bot, Logs } from "lucide-react";
 
 export function AppSidebar() {
   const nav = [
-    { label: "Home", href: "/", icon: Home },
-    { label: "Chat", href: "/chat", icon: MessageSquare },
-    { label: "Agent-Hub", href: "/agent-hub", icon: Bot },
-    { label: "Blog", href: "/blog", icon: Book },
-    { label: "Log", href: "/log", icon: Logs },
-    { label: "Knowledge-Base", href: "/knowledge-base", icon: LibraryBig },
-    { label: "Login(获取token)", href: "/login", icon: Logs },
+    { label: "Home", href: "/main", icon: Home },
+    { label: "Chat", href: "/main/chat", icon: MessageSquare },
+    { label: "Agent-Hub", href: "/main/agent-hub", icon: Bot },
+    { label: "Blog", href: "/main/blog", icon: Book },
+    { label: "Log", href: "/main/log", icon: Logs },
+    { label: "Knowledge-Base", href: "/main/knowledge-base", icon: LibraryBig },
   ];
 
   return (
