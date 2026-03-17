@@ -25,41 +25,53 @@ export default function ChatConversationItem({
   return (
     <div
       className={cn(
-        "group flex items-center justify-between px-3 py-2 rounded-md text-sm border transition-colors",
-        active
-          ? "bg-primary text-primary-foreground border-primary"
-          : "bg-background hover:bg-accent hover:text-accent-foreground"
+        "group relative flex items-center justify-between px-3 py-2.5 rounded-lg text-sm",
+        "transition-all duration-300 cursor-pointer",
+
+        active ? "text-white" : "text-white/50 hover:text-white",
       )}
     >
-      {/* 左侧点击进入会话 */}
+      {/* active glow */}
+      {active && (
+        <div className="absolute inset-0 rounded-lg bg-[#4ef2c2]/10" />
+      )}
+
+      {/* left indicator */}
+      <div
+        className={cn(
+          "absolute left-0 top-1/2 -translate-y-1/2 h-5 w-[2px] rounded-full",
+          active ? "bg-[#4ef2c2]" : "bg-transparent",
+        )}
+      />
+
+      {/* title */}
       <button
-        type="button"
         onClick={onClick}
-        className="truncate text-left flex-1"
+        className="truncate text-left flex-1 relative z-10"
       >
         {conversation.title}
       </button>
 
-      {/* 右侧三点菜单 */}
+      {/* menu */}
       <DropdownMenu>
         <DropdownMenuTrigger asChild>
           <button
-            className={cn(
-              "p-1 rounded text-muted-foreground hover:text-foreground hover:bg-muted transition-colors",
-              active && "text-primary-foreground"
-            )}
+            className="
+              relative z-10 p-1 rounded opacity-0 group-hover:opacity-100
+              text-white/40 hover:text-white transition
+            "
           >
             <MoreHorizontal className="h-4 w-4" />
           </button>
         </DropdownMenuTrigger>
 
         <DropdownMenuContent align="end">
-          <DropdownMenuItem onClick={onEdit}>更新标题</DropdownMenuItem>
+          <DropdownMenuItem onClick={onEdit}>Rename</DropdownMenuItem>
           <DropdownMenuItem
             onClick={onDelete}
-            className="text-red-600 focus:text-red-600"
+            className="text-red-500 focus:text-red-500"
           >
-            删除
+            Delete
           </DropdownMenuItem>
         </DropdownMenuContent>
       </DropdownMenu>

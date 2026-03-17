@@ -2,8 +2,6 @@
 "use client";
 
 import { useState } from "react";
-import { Input } from "@/components/ui/input";
-import { Button } from "@/components/ui/button";
 
 interface ChatInputProps {
   onSend: (msg: string) => void;
@@ -20,18 +18,48 @@ export default function ChatInput({ onSend, disabled }: ChatInputProps) {
   };
 
   return (
-    <div className="flex gap-3">
-      <Input
-        className="flex-1"
-        placeholder="输入消息..."
+    <div
+      className="
+        relative flex items-center gap-3 px-4 py-3
+        rounded-xl border border-white/10
+        bg-white/[0.03]
+        backdrop-blur
+      "
+    >
+      {/* glow */}
+      <div
+        className="
+            pointer-events-none
+            absolute inset-0 opacity-0 focus-within:opacity-100
+            transition
+            bg-[radial-gradient(circle_at_center,rgba(78,242,194,0.15),transparent_70%)]
+          "
+      />
+
+      <input
+        className="
+          flex-1 bg-transparent outline-none text-sm text-white/90
+          placeholder:text-white/30
+        "
+        placeholder="Ask anything..."
         value={value}
         disabled={disabled}
         onChange={(e) => setValue(e.target.value)}
         onKeyDown={(e) => e.key === "Enter" && send()}
       />
-      <Button onClick={send} disabled={disabled}>
-        发送
-      </Button>
+
+      <button
+        onClick={send}
+        disabled={disabled}
+        className="
+          text-xs px-3 py-1.5 rounded-md
+          bg-[#4ef2c2]/20 text-[#4ef2c2]
+          hover:bg-[#4ef2c2]/30
+          transition
+        "
+      >
+        Send
+      </button>
     </div>
   );
 }

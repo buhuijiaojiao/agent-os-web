@@ -46,7 +46,7 @@ export default function ChatConversationList({ current, onSelect }: Props) {
 
   async function createConversation() {
     const newId = await httpPost<number>("/api/proxy/conversation/create", {
-      conversationTitle: "新的会话",
+      conversationTitle: "New thread",
     });
     await loadConversations();
     onSelect(newId);
@@ -80,7 +80,7 @@ export default function ChatConversationList({ current, onSelect }: Props) {
     if (!deletingId) return;
 
     await httpDelete(
-      `/api/proxy/conversation/delete?conversationId=${deletingId}`
+      `/api/proxy/conversation/delete?conversationId=${deletingId}`,
     );
 
     setDeleteOpen(false);
@@ -97,21 +97,36 @@ export default function ChatConversationList({ current, onSelect }: Props) {
 
   return (
     <>
-      <div className="flex flex-col h-full min-h-0">
-        <div className="flex items-center justify-between px-4 py-3 border-b bg-muted/40">
-          <h2 className="text-sm font-semibold">历史</h2>
-          <Button
-            size="icon"
-            variant="outline"
-            className="h-7 w-7"
-            onClick={createConversation}
-          >
-            <Plus className="w-4 h-4" />
-          </Button>
+      <div className="flex flex-col h-full min-h-0 text-white">
+        {/* Header（重做） */}
+        <div className="px-4 py-4 space-y-3 border-b border-white/10">
+          <div className="flex items-center justify-between">
+            <h2 className="text-xs uppercase tracking-widest text-white/40">
+              Conversations
+            </h2>
+
+            <button
+              onClick={createConversation}
+              className="
+                group relative w-7 h-7 flex items-center justify-center
+                rounded-md border border-white/10
+                hover:border-[#4ef2c2]/50 transition
+              "
+            >
+              <Plus className="w-4 h-4 text-white/60 group-hover:text-[#4ef2c2]" />
+
+              <div
+                className="absolute inset-0 opacity-0 group-hover:opacity-100
+                              bg-[radial-gradient(circle,rgba(78,242,194,0.2),transparent_70%)]
+                              transition"
+              />
+            </button>
+          </div>
         </div>
 
-        <ScrollArea className="flex-1 px-3 py-3">
-          <div className="space-y-2">
+        {/* List */}
+        <ScrollArea className="flex-1 px-2 py-3">
+          <div className="space-y-1">
             {conversations.map((c) => (
               <ChatConversationItem
                 key={c.id}
@@ -126,7 +141,7 @@ export default function ChatConversationList({ current, onSelect }: Props) {
         </ScrollArea>
       </div>
 
-      {/* Dialogs 原样保留 */}
+      {/* dialogs 不动 */}
       <Dialog open={editOpen} onOpenChange={setEditOpen}>
         <DialogContent>
           <DialogHeader>

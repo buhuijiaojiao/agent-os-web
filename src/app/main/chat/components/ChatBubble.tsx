@@ -13,19 +13,21 @@ export default function ChatBubble({ role, content }: ChatBubbleProps) {
   const isUser = role === "user";
 
   return (
-    <div className="w-full">
+    <div className="w-full group">
       <div
         className={cn(
           "flex items-start gap-3",
-          isUser ? "flex-row-reverse" : "flex-row"
+          isUser ? "flex-row-reverse" : "flex-row",
         )}
       >
+        {/* Avatar */}
         <Avatar className="w-8 h-8 shrink-0">
           <AvatarFallback
             className={cn(
+              "transition-all",
               isUser
-                ? "bg-primary text-primary-foreground"
-                : "bg-secondary text-secondary-foreground"
+                ? "bg-white/10 text-white"
+                : "bg-[#4ef2c2]/20 text-[#4ef2c2]",
             )}
           >
             {isUser ? (
@@ -36,26 +38,45 @@ export default function ChatBubble({ role, content }: ChatBubbleProps) {
           </AvatarFallback>
         </Avatar>
 
+        {/* Bubble */}
         <div
           className={cn(
-            "max-w-[80%] md:max-w-[70%] p-3 rounded-xl text-sm shadow-sm",
-            "animate-in fade-in-0 slide-in-from-bottom-1 duration-200",
+            "relative max-w-[80%] md:max-w-[65%]",
+            "px-4 py-3 rounded-2xl text-sm",
+            "transition-all duration-300",
+            "animate-in fade-in-0 slide-in-from-bottom-2",
+
             isUser
-              ? "rounded-br-none bg-primary text-primary-foreground"
-              : "rounded-tl-none bg-card border border-border/70"
+              ? "bg-white/5 text-white/90 rounded-br-md"
+              : "bg-white/[0.03] border border-white/10 rounded-tl-md",
           )}
         >
-          {isUser ? (
-            // 用户消息：纯文本
-            <pre className="whitespace-pre-wrap font-sans">{content}</pre>
-          ) : (
-            // AI 消息：Markdown 渲染
-            <div className="prose prose-sm dark:prose-invert max-w-none">
-              <ReactMarkdown remarkPlugins={[remarkGfm]}>
-                {content}
-              </ReactMarkdown>
-            </div>
+          {/* subtle glow for AI */}
+          {!isUser && (
+            <div
+              className="
+                pointer-events-none absolute inset-0 opacity-0 group-hover:opacity-100
+                transition duration-500
+                bg-[radial-gradient(circle_at_top_left,rgba(78,242,194,0.15),transparent_60%)]
+              "
+            />
           )}
+
+          {/* content */}
+          <div className="relative z-10 leading-relaxed">
+            {isUser ? (
+              <p className="whitespace-pre-wrap">{content}</p>
+            ) : (
+              <div
+                className="prose prose-sm max-w-none prose-invert
+                              prose-p:my-2 prose-code:text-[#4ef2c2]"
+              >
+                <ReactMarkdown remarkPlugins={[remarkGfm]}>
+                  {content}
+                </ReactMarkdown>
+              </div>
+            )}
+          </div>
         </div>
       </div>
     </div>

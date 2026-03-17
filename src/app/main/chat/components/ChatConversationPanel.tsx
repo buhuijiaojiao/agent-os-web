@@ -7,7 +7,7 @@ import { httpGet, httpPost } from "@/lib/http";
 
 interface RawMessage {
   id: number;
-  senderType: number; // 1=user, 2=assistant
+  senderType: number;
   content: string;
 }
 
@@ -25,30 +25,27 @@ export default function ChatConversationPanel({ conversationId }: Props) {
   const [messages, setMessages] = useState<Message[]>([]);
   const [typing, setTyping] = useState(false);
 
-  /** 加载历史消息 */
   useEffect(() => {
     loadMessages();
   }, [conversationId]);
 
   async function loadMessages() {
     const data = await httpGet<RawMessage[]>(
-      `/api/proxy/message/list?conversationId=${conversationId}`
+      `/api/proxy/message/list?conversationId=${conversationId}`,
     );
 
-    const mapped: Message[] = data.map((m) => ({
-      id: m.id,
-      role: m.senderType === 1 ? "user" : "assistant",
-      content: m.content,
-    }));
-
-    setMessages(mapped);
+    setMessages(
+      data.map((m) => ({
+        id: m.id,
+        role: m.senderType === 1 ? "user" : "assistant",
+        content: m.content,
+      })),
+    );
   }
 
-  /** 发送消息 */
   async function sendMessage(content: string) {
     if (!content.trim()) return;
 
-    // 1. 乐观更新：先插入 user 消息
     const userMsg: Message = {
       id: Date.now(),
       role: "user",
@@ -59,28 +56,26 @@ export default function ChatConversationPanel({ conversationId }: Props) {
     setTyping(true);
 
     try {
-      // 2. 调用后端对话接口
       const reply = await httpPost<string>("/api/proxy/message/chat", {
         conversationId,
         userMessageContent: content,
       });
 
-      // 3. 插入 assistant 消息
-      const aiMsg: Message = {
-        id: Date.now() + 1,
-        role: "assistant",
-        content: reply,
-      };
-
-      setMessages((prev) => [...prev, aiMsg]);
-    } catch (err: any) {
-      // 4. 错误兜底（也作为 assistant 消息展示）
       setMessages((prev) => [
         ...prev,
         {
           id: Date.now() + 1,
           role: "assistant",
-          content: `（请求失败：${err.message ?? "未知错误"}）`,
+          content: reply,
+        },
+      ]);
+    } catch (err: any) {
+      setMessages((prev) => [
+        ...prev,
+        {
+          id: Date.now() + 1,
+          role: "assistant",
+          content: `Error: ${err.message ?? "unknown"}`,
         },
       ]);
     } finally {
@@ -89,19 +84,34 @@ export default function ChatConversationPanel({ conversationId }: Props) {
   }
 
   return (
-    <div className="flex flex-col h-full min-h-0">
-      {/* Header */}
-      <header className="px-6 py-3 border-b border-border bg-background/80 backdrop-blur">
-        <h1 className="text-xl font-semibold">Chat</h1>
+    <div className="flex flex-col h-full min-h-0 text-white">
+      {/* Header（重设计） */}
+      <header className="px-6 py-3 border-b border-white/10 flex items-center justify-between">
+        <div className="flex items-center gap-3">
+          <div className="w-2 h-2 rounded-full bg-[#4ef2c2] animate-pulse" />
+          <span className="text-sm text-white/70">
+            Conversation #{conversationId}
+          </span>
+        </div>
+
+        <span className="text-xs text-white/30">
+          {typing ? "thinking..." : "idle"}
+        </span>
       </header>
 
       {/* Messages */}
-      <div className="flex-1 min-h-0">
+      <div className="flex-1 min-h-0 relative">
         <ChatMessages messages={messages} typing={typing} />
       </div>
 
-      {/* Input */}
-      <div className="border-t border-border p-4 bg-background">
+      {/* Input（升级为 command zone） */}
+      <div
+        className="
+          border-t border-white/10
+          p-4
+          bg-[#0f1115]/80 backdrop-blur
+        "
+      >
         <ChatInput onSend={sendMessage} disabled={typing} />
       </div>
     </div>

@@ -1,13 +1,8 @@
 "use client";
 
-import React, { useState, useCallback, useEffect } from "react";
+import React, { useState, useCallback } from "react";
 import { useRouter } from "next/navigation";
 import { httpPost } from "@/lib/http";
-
-interface LoginDto {
-  email: string;
-  password: string;
-}
 
 export default function LoginPage() {
   const router = useRouter();
@@ -19,7 +14,6 @@ export default function LoginPage() {
     text: string | null;
     isError: boolean;
   }>({ text: null, isError: false });
-
 
   const showMessage = (text: string | null, isError: boolean) => {
     setMessage({ text, isError });
@@ -43,12 +37,10 @@ export default function LoginPage() {
           password,
         });
 
-        // 保存登录态
         localStorage.setItem("authToken", token);
 
         showMessage("登录成功，正在进入系统...", false);
 
-        // replace：避免回退到登录页
         setTimeout(() => {
           router.replace("/main");
         }, 500);
@@ -60,74 +52,143 @@ export default function LoginPage() {
         setIsLoading(false);
       }
     },
-    [email, password, router]
+    [email, password, router],
   );
 
-  const messageClass = message.text
-    ? message.isError
-      ? "bg-red-100 text-red-700"
-      : "bg-green-100 text-green-700"
-    : "hidden";
-
-  const buttonText = isLoading ? "登录中..." : "登录";
-
   return (
-    <div
-      className="min-h-screen flex justify-center items-center bg-gray-100 p-4"
-      style={{
-        background: "linear-gradient(135deg, #f0f4f8 0%, #d9e2ec 100%)",
-      }}
-    >
-      <div className="w-full max-w-md p-8 space-y-6 bg-white shadow-xl rounded-xl">
-        <div className="text-center">
-          <h1 className="text-3xl font-extrabold text-gray-900">欢迎回来</h1>
-          <p className="mt-2 text-sm text-gray-500">请登录您的账户</p>
+    <div className="fixed inset-0 z-50 flex items-center justify-center text-white">
+      {/* 🌌 强制背景（关键：不受 layout 影响） */}
+      <div className="absolute inset-0 bg-[#0b0c10]" />
+
+      {/* gradient atmosphere */}
+      <div
+        className="
+          pointer-events-none absolute inset-0
+          bg-[radial-gradient(circle_at_20%_20%,rgba(78,242,194,0.08),transparent_40%),
+              radial-gradient(circle_at_80%_0%,rgba(78,242,194,0.05),transparent_50%)]
+        "
+      />
+
+      {/* grid */}
+      <div
+        className="
+          pointer-events-none absolute inset-0 opacity-[0.04]
+          [background-image:linear-gradient(to_right,#fff_1px,transparent_1px),
+                           linear-gradient(to_bottom,#fff_1px,transparent_1px)]
+          [background-size:48px_48px]
+        "
+      />
+
+      {/* 🧠 登录面板 */}
+      <div
+        className="
+          relative w-full max-w-md p-8 space-y-6
+          rounded-2xl
+          bg-[#111217]/80 backdrop-blur-xl
+          border border-white/10
+          shadow-[0_0_60px_rgba(0,0,0,0.6)]
+        "
+      >
+        {/* Header */}
+        <div className="text-center space-y-2">
+          <div className="flex items-center justify-center gap-2">
+            <div className="w-2 h-2 rounded-full bg-[#4ef2c2] animate-pulse" />
+            <span className="text-xs text-white/40 tracking-widest uppercase">
+              Agent OS
+            </span>
+          </div>
+
+          <h1 className="text-3xl font-semibold tracking-tight">
+            Access System
+          </h1>
+
+          <p className="text-sm text-white/40">
+            Enter your credentials to continue
+          </p>
         </div>
 
-        <form className="space-y-6" onSubmit={doLogin}>
-          <div>
-            <label className="block text-sm font-medium text-gray-700 mb-1">
-              邮箱地址
-            </label>
-            <input
-              type="email"
-              required
-              value={email}
-              onChange={(e) => setEmail(e.target.value)}
-              disabled={isLoading}
-              className="w-full px-4 py-2 border rounded-lg focus:ring-2 focus:ring-indigo-500"
-            />
-          </div>
+        {/* Form */}
+        <form onSubmit={doLogin} className="space-y-5">
+          <InputField
+            label="Email"
+            value={email}
+            disabled={isLoading}
+            onChange={(e: any) => setEmail(e.target.value)}
+          />
 
-          <div>
-            <label className="block text-sm font-medium text-gray-700 mb-1">
-              密码
-            </label>
-            <input
-              type="password"
-              required
-              value={password}
-              onChange={(e) => setPassword(e.target.value)}
-              disabled={isLoading}
-              className="w-full px-4 py-2 border rounded-lg focus:ring-2 focus:ring-indigo-500"
-            />
-            <p className="mt-1 text-xs text-gray-500">
-              密码长度需在 6 到 12 位之间。
-            </p>
-          </div>
+          <InputField
+            label="Password"
+            type="password"
+            value={password}
+            disabled={isLoading}
+            onChange={(e: any) => setPassword(e.target.value)}
+          />
 
           <button
             type="submit"
             disabled={isLoading}
-            className="w-full py-2 rounded-lg bg-indigo-600 text-white font-semibold disabled:bg-indigo-400"
+            className="
+              w-full py-2.5 rounded-lg
+              bg-[#4ef2c2]/20 text-[#4ef2c2]
+              hover:bg-[#4ef2c2]/30
+              transition
+              disabled:opacity-50
+            "
           >
-            {buttonText}
+            {isLoading ? "Entering..." : "Enter System"}
           </button>
 
-          <div className={`text-center p-3 rounded-lg ${messageClass}`}>
-            {message.text}
-          </div>
+          {message.text && (
+            <div
+              className={`
+                text-sm px-3 py-2 rounded-md
+                ${
+                  message.isError
+                    ? "bg-red-500/10 text-red-400"
+                    : "bg-[#4ef2c2]/10 text-[#4ef2c2]"
+                }
+              `}
+            >
+              {message.text}
+            </div>
+          )}
         </form>
+      </div>
+    </div>
+  );
+}
+function InputField({ label, type = "text", value, onChange, disabled }: any) {
+  return (
+    <div className="space-y-1">
+      <label className="text-xs text-white/40">{label}</label>
+
+      <div
+        className="
+          relative rounded-lg border border-white/10
+          bg-white/[0.03]
+          focus-within:border-[#4ef2c2]/50
+          transition
+        "
+      >
+        {/* glow */}
+        <div
+          className="pointer-events-none absolute inset-0 opacity-0 
+                        focus-within:opacity-100 transition
+                        bg-[radial-gradient(circle,rgba(78,242,194,0.15),transparent_70%)]"
+        />
+
+        <input
+          type={type}
+          value={value}
+          disabled={disabled}
+          onChange={onChange}
+          className="
+            relative z-10 w-full px-4 py-2.5
+            bg-transparent outline-none
+            text-sm text-white
+            placeholder:text-white/30
+          "
+        />
       </div>
     </div>
   );
