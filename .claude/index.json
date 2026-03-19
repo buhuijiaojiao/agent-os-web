@@ -1,0 +1,193 @@
+{
+  "timestamp": "2026-03-19T00:00:00.000Z",
+  "project": {
+    "name": "agent-os-web",
+    "version": "0.1.0",
+    "type": "nextjs-app-router",
+    "language": "TypeScript"
+  },
+  "root": {
+    "claudeMd": "CLAUDE.md",
+    "entry": "src/app/page.tsx",
+    "config": [
+      "package.json",
+      "tsconfig.json",
+      "next.config.ts",
+      "eslint.config.mjs",
+      "postcss.config.mjs"
+    ]
+  },
+  "modules": [
+    {
+      "name": "auth/login",
+      "path": "src/app/auth/login",
+      "claudeMd": "src/app/auth/login/CLAUDE.md",
+      "entry": "src/app/auth/login/page.tsx",
+      "api": [
+        "/api/proxy/user/doLogin"
+      ],
+      "routes": [
+        "/auth/login"
+      ],
+      "hasTests": false
+    },
+    {
+      "name": "api/proxy",
+      "path": "src/app/api/proxy",
+      "claudeMd": "src/app/api/proxy/CLAUDE.md",
+      "entry": "src/app/api/proxy/[...path]/route.ts",
+      "api": [],
+      "routes": [
+        "/api/proxy/*"
+      ],
+      "hasTests": false
+    },
+    {
+      "name": "main/chat",
+      "path": "src/app/main/chat",
+      "claudeMd": "src/app/main/chat/CLAUDE.md",
+      "entry": "src/app/main/chat/layout.tsx",
+      "components": [
+        "ChatConversationList.tsx",
+        "ChatConversationItem.tsx",
+        "ChatConversationPanel.tsx",
+        "ChatMessages.tsx",
+        "ChatBubble.tsx",
+        "ChatInput.tsx"
+      ],
+      "api": [
+        "/api/proxy/conversation/list",
+        "/api/proxy/conversation/create",
+        "/api/proxy/conversation/update",
+        "/api/proxy/conversation/delete",
+        "/api/proxy/message/list",
+        "/api/proxy/message/chat"
+      ],
+      "routes": [
+        "/main/chat"
+      ],
+      "hasTests": false
+    },
+    {
+      "name": "main/agent-hub",
+      "path": "src/app/main/agent-hub",
+      "claudeMd": "src/app/main/agent-hub/CLAUDE.md",
+      "entry": "src/app/main/agent-hub/page.tsx",
+      "components": [
+        "AgentCard.tsx",
+        "AgentDetailsSheet.tsx"
+      ],
+      "api": [],
+      "routes": [
+        "/main/agent-hub"
+      ],
+      "hasTests": false,
+      "mockData": true
+    },
+    {
+      "name": "main/blog",
+      "path": "src/app/main/blog",
+      "claudeMd": "src/app/main/blog/CLAUDE.md",
+      "entry": "src/app/main/blog/page.tsx",
+      "components": [],
+      "api": [],
+      "routes": [
+        "/main/blog",
+        "/main/blog/[slug]"
+      ],
+      "hasTests": false,
+      "mockData": true
+    },
+    {
+      "name": "components/layout",
+      "path": "src/components/layout",
+      "claudeMd": "src/components/layout/CLAUDE.md",
+      "components": [
+        "AppSidebar.tsx",
+        "AppTopBar.tsx"
+      ],
+      "hasTests": false
+    },
+    {
+      "name": "components/ui",
+      "path": "src/components/ui",
+      "claudeMd": "src/components/ui/CLAUDE.md",
+      "components": [
+        "button.tsx",
+        "input.tsx",
+        "textarea.tsx",
+        "label.tsx",
+        "card.tsx",
+        "badge.tsx",
+        "avatar.tsx",
+        "dialog.tsx",
+        "sheet.tsx",
+        "tabs.tsx",
+        "scroll-area.tsx",
+        "separator.tsx",
+        "tooltip.tsx",
+        "dropdown-menu.tsx"
+      ],
+      "hasTests": false
+    },
+    {
+      "name": "lib",
+      "path": "src/lib",
+      "claudeMd": "src/lib/CLAUDE.md",
+      "files": [
+        "http.ts",
+        "utils.ts"
+      ],
+      "hasTests": false
+    }
+  ],
+  "coverage": {
+    "totalFiles": 38,
+    "scannedFiles": 38,
+    "percentage": 100,
+    "modulesDocumented": 9,
+    "modulesTotal": 9
+  },
+  "gaps": {
+    "missingTests": true,
+    "missingTestsModules": [
+      "auth/login",
+      "api/proxy",
+      "main/chat",
+      "main/agent-hub",
+      "main/blog",
+      "components/layout",
+      "components/ui",
+      "lib"
+    ],
+    "mockDataModules": [
+      "main/agent-hub",
+      "main/blog"
+    ],
+    "unimplementedPages": [
+      "src/app/main/blog/[slug]/page.tsx"
+    ],
+    "missingRoutes": [
+      "/main/log",
+      "/main/knowledge-base"
+    ]
+  },
+  "ignoreStats": {
+    "ignoredDirs": [
+      "node_modules",
+      ".next",
+      ".git",
+      "public"
+    ],
+    "ignoreSource": ".gitignore + defaults"
+  },
+  "truncated": false,
+  "nextSteps": [
+    "为所有模块添加单元测试",
+    "实现 Agent Hub 的后端 API 对接",
+    "实现 Blog 模块的后端 API 对接",
+    "完成 Blog 详情页 [slug]/page.tsx",
+    "实现 /main/log 路由页面",
+    "实现 /main/knowledge-base 路由页面"
+  ]
+}
