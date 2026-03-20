@@ -1,12 +1,19 @@
 // app/main/layout.tsx
-import { AppSidebar } from "@/components/layout/AppSidebar";
-import { AppTopBar } from "@/components/layout/AppTopBar";
+"use client";
 
-export default function MainLayout({
+import { AppSidebar } from "./components/layout/AppSidebar";
+import { AppTopBar } from "./components/layout/AppTopBar";
+import { SidebarProvider, useSidebar } from "./components/layout/SidebarContext";
+import { TooltipProvider } from "@/components/ui/tooltip";
+import { cn } from "@/lib/utils";
+
+function MainLayoutContent({
   children,
 }: {
   children: React.ReactNode;
 }) {
+  const { isCollapsed } = useSidebar();
+
   return (
     <div className="relative h-screen overflow-hidden bg-background text-foreground">
       {/* 🌌 Background Atmosphere */}
@@ -32,15 +39,11 @@ export default function MainLayout({
       <div className="relative flex h-full p-3 gap-3">
         {/* Sidebar */}
         <div
-          className="
-            w-[260px]
-            rounded-2xl
-            bg-card/80
-            backdrop-blur-xl
-            border border-border
-            shadow-lg
-            overflow-hidden
-          "
+          className={cn(
+            "rounded-2xl transition-all duration-300 ease-in-out",
+            "bg-card/80 backdrop-blur-xl border border-border shadow-lg overflow-hidden",
+            isCollapsed ? "w-[68px]" : "w-[260px]"
+          )}
         >
           <AppSidebar />
         </div>
@@ -67,5 +70,19 @@ export default function MainLayout({
         </div>
       </div>
     </div>
+  );
+}
+
+export default function MainLayout({
+  children,
+}: {
+  children: React.ReactNode;
+}) {
+  return (
+    <TooltipProvider delayDuration={0}>
+      <SidebarProvider>
+        <MainLayoutContent>{children}</MainLayoutContent>
+      </SidebarProvider>
+    </TooltipProvider>
   );
 }
