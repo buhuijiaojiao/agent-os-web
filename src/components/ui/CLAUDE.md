@@ -67,7 +67,7 @@ size: "default" | "sm" | "lg" | "icon"
 
 - 使用 `cn()` 函数合并类名
 - 遵循全局 CSS 变量 (`--color-*`)
-- 支持暗色主题
+- 支持深色/浅色主题
 
 ## 使用示例
 
@@ -106,6 +106,10 @@ import { Dialog, DialogContent, DialogTrigger } from "@/components/ui/dialog";
 | `dropdown-menu.tsx` | 下拉菜单组件 |
 
 ## 变更记录 (Changelog)
+
+### 2026-03-21 - 更新
+
+- 无新增组件
 
 ### 2026-03-19 - 初始化
 

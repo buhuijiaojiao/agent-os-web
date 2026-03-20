@@ -95,6 +95,10 @@ const token = await httpPost<string>("/api/proxy/user/doLogin", {
 
 ## 变更记录 (Changelog)
 
+### 2026-03-21 - 更新
+
+- 无功能变更
+
 ### 2026-03-19 - 初始化
 
 - 创建模块文档

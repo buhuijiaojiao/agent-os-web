@@ -1,5 +1,5 @@
 {
-  "timestamp": "2026-03-19T00:00:00.000Z",
+  "timestamp": "2026-03-21T00:00:00.000Z",
   "project": {
     "name": "agent-os-web",
     "version": "0.1.0",
@@ -85,6 +85,28 @@
       "mockData": true
     },
     {
+      "name": "main/task",
+      "path": "src/app/main/task",
+      "claudeMd": "src/app/main/task/CLAUDE.md",
+      "entry": "src/app/main/task/page.tsx",
+      "components": [
+        "ExecutionTimeline.tsx",
+        "TaskResult.tsx",
+        "TaskHistory.tsx",
+        "TaskDetail.tsx",
+        "ExecutionControl.tsx"
+      ],
+      "api": [],
+      "routes": [
+        "/main/task"
+      ],
+      "hasTests": false,
+      "mockData": true,
+      "localStorageKeys": [
+        "task_history"
+      ]
+    },
+    {
       "name": "main/blog",
       "path": "src/app/main/blog",
       "claudeMd": "src/app/main/blog/CLAUDE.md",
@@ -96,15 +118,29 @@
         "/main/blog/[slug]"
       ],
       "hasTests": false,
-      "mockData": true
+      "mockData": true,
+      "detailPageImplemented": true
     },
     {
-      "name": "components/layout",
-      "path": "src/components/layout",
-      "claudeMd": "src/components/layout/CLAUDE.md",
+      "name": "main/components/layout",
+      "path": "src/app/main/components/layout",
+      "claudeMd": "src/app/main/components/layout/CLAUDE.md",
       "components": [
         "AppSidebar.tsx",
-        "AppTopBar.tsx"
+        "AppTopBar.tsx",
+        "SidebarContext.tsx"
+      ],
+      "hasTests": false,
+      "localStorageKeys": [
+        "sidebar_collapsed"
+      ]
+    },
+    {
+      "name": "components/theme",
+      "path": "src/components",
+      "components": [
+        "theme-provider.tsx",
+        "theme-toggle.tsx"
       ],
       "hasTests": false
     },
@@ -142,11 +178,11 @@
     }
   ],
   "coverage": {
-    "totalFiles": 38,
-    "scannedFiles": 38,
+    "totalFiles": 47,
+    "scannedFiles": 47,
     "percentage": 100,
-    "modulesDocumented": 9,
-    "modulesTotal": 9
+    "modulesDocumented": 11,
+    "modulesTotal": 11
   },
   "gaps": {
     "missingTests": true,
@@ -155,19 +191,19 @@
       "api/proxy",
       "main/chat",
       "main/agent-hub",
+      "main/task",
       "main/blog",
-      "components/layout",
+      "main/components/layout",
+      "components/theme",
       "components/ui",
       "lib"
     ],
     "mockDataModules": [
       "main/agent-hub",
+      "main/task",
       "main/blog"
     ],
-    "unimplementedPages": [
-      "src/app/main/blog/[slug]/page.tsx"
-    ],
-    "missingRoutes": [
+    "unimplementedRoutes": [
       "/main/log",
       "/main/knowledge-base"
     ]
@@ -185,9 +221,29 @@
   "nextSteps": [
     "为所有模块添加单元测试",
     "实现 Agent Hub 的后端 API 对接",
+    "实现 Task 模块的后端 API 对接",
     "实现 Blog 模块的后端 API 对接",
-    "完成 Blog 详情页 [slug]/page.tsx",
     "实现 /main/log 路由页面",
     "实现 /main/knowledge-base 路由页面"
-  ]
+  ],
+  "changesSinceLastScan": {
+    "date": "2026-03-21",
+    "newModules": [
+      "main/task",
+      "main/components/layout",
+      "components/theme"
+    ],
+    "movedModules": [
+      {
+        "from": "src/components/layout",
+        "to": "src/app/main/components/layout"
+      }
+    ],
+    "newFeatures": [
+      "Task 执行控制台",
+      "侧边栏折叠功能",
+      "深色/浅色主题切换",
+      "Blog 详情页基础实现"
+    ]
+  }
 }
