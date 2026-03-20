@@ -21,8 +21,8 @@ export default function ChatInput({ onSend, disabled }: ChatInputProps) {
     <div
       className="
         relative flex items-center gap-3 px-4 py-3
-        rounded-xl border border-white/10
-        bg-white/[0.03]
+        rounded-xl border border-border
+        bg-muted/50
         backdrop-blur
       "
     >
@@ -38,8 +38,8 @@ export default function ChatInput({ onSend, disabled }: ChatInputProps) {
 
       <input
         className="
-          flex-1 bg-transparent outline-none text-sm text-white/90
-          placeholder:text-white/30
+          flex-1 bg-transparent outline-none text-sm text-foreground
+          placeholder:text-muted-foreground
         "
         placeholder="Ask anything..."
         value={value}

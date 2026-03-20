@@ -69,13 +69,14 @@ export default function ChatConversationPanel({ conversationId }: Props) {
           content: reply,
         },
       ]);
-    } catch (err: any) {
+    } catch (err: unknown) {
+      const errorMessage = err instanceof Error ? err.message : "unknown";
       setMessages((prev) => [
         ...prev,
         {
           id: Date.now() + 1,
           role: "assistant",
-          content: `Error: ${err.message ?? "unknown"}`,
+          content: `Error: ${errorMessage}`,
         },
       ]);
     } finally {
@@ -84,17 +85,17 @@ export default function ChatConversationPanel({ conversationId }: Props) {
   }
 
   return (
-    <div className="flex flex-col h-full min-h-0 text-white">
-      {/* Header（重设计） */}
-      <header className="px-6 py-3 border-b border-white/10 flex items-center justify-between">
+    <div className="flex flex-col h-full min-h-0 text-foreground">
+      {/* Header */}
+      <header className="px-6 py-3 border-b border-border flex items-center justify-between">
         <div className="flex items-center gap-3">
           <div className="w-2 h-2 rounded-full bg-[#4ef2c2] animate-pulse" />
-          <span className="text-sm text-white/70">
+          <span className="text-sm text-muted-foreground">
             Conversation #{conversationId}
           </span>
         </div>
 
-        <span className="text-xs text-white/30">
+        <span className="text-xs text-muted-foreground">
           {typing ? "thinking..." : "idle"}
         </span>
       </header>
@@ -104,12 +105,12 @@ export default function ChatConversationPanel({ conversationId }: Props) {
         <ChatMessages messages={messages} typing={typing} />
       </div>
 
-      {/* Input（升级为 command zone） */}
+      {/* Input */}
       <div
         className="
-          border-t border-white/10
+          border-t border-border
           p-4
-          bg-[#0f1115]/80 backdrop-blur
+          bg-card/80 backdrop-blur
         "
       >
         <ChatInput onSend={sendMessage} disabled={typing} />

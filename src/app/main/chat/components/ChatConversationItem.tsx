@@ -28,7 +28,7 @@ export default function ChatConversationItem({
         "group relative flex items-center justify-between px-3 py-2.5 rounded-lg text-sm",
         "transition-all duration-300 cursor-pointer",
 
-        active ? "text-white" : "text-white/50 hover:text-white",
+        active ? "text-foreground" : "text-muted-foreground hover:text-foreground",
       )}
     >
       {/* active glow */}
@@ -58,7 +58,7 @@ export default function ChatConversationItem({
           <button
             className="
               relative z-10 p-1 rounded opacity-0 group-hover:opacity-100
-              text-white/40 hover:text-white transition
+              text-muted-foreground hover:text-foreground transition
             "
           >
             <MoreHorizontal className="h-4 w-4" />
@@ -69,7 +69,7 @@ export default function ChatConversationItem({
           <DropdownMenuItem onClick={onEdit}>Rename</DropdownMenuItem>
           <DropdownMenuItem
             onClick={onDelete}
-            className="text-red-500 focus:text-red-500"
+            className="text-destructive focus:text-destructive"
           >
             Delete
           </DropdownMenuItem>

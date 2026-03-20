@@ -8,7 +8,7 @@ export default function MainLayout({
   children: React.ReactNode;
 }) {
   return (
-    <div className="relative h-screen overflow-hidden bg-[#0b0c10] text-white">
+    <div className="relative h-screen overflow-hidden bg-background text-foreground">
       {/* 🌌 Background Atmosphere */}
       <div
         className="
@@ -22,8 +22,8 @@ export default function MainLayout({
       <div
         className="
           pointer-events-none absolute inset-0 opacity-[0.03]
-          [background-image:linear-gradient(to_right,#fff_1px,transparent_1px),
-                           linear-gradient(to_bottom,#fff_1px,transparent_1px)]
+          [background-image:linear-gradient(to_right,currentColor_1px,transparent_1px),
+                           linear-gradient(to_bottom,currentColor_1px,transparent_1px)]
           [background-size:48px_48px]
         "
       />
@@ -35,10 +35,10 @@ export default function MainLayout({
           className="
             w-[260px]
             rounded-2xl
-            bg-[#111217]/80
+            bg-card/80
             backdrop-blur-xl
-            border border-white/10
-            shadow-[0_0_40px_rgba(0,0,0,0.6)]
+            border border-border
+            shadow-lg
             overflow-hidden
           "
         >
@@ -50,15 +50,15 @@ export default function MainLayout({
           className="
             flex-1 flex flex-col
             rounded-2xl
-            bg-[#111217]/70
+            bg-card/70
             backdrop-blur-xl
-            border border-white/10
-            shadow-[0_0_60px_rgba(0,0,0,0.6)]
+            border border-border
+            shadow-lg
             overflow-hidden
           "
         >
           {/* TopBar */}
-          <div className="border-b border-white/10">
+          <div className="border-b border-border">
             <AppTopBar />
           </div>
 

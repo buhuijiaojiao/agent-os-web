@@ -87,7 +87,7 @@ export default function ChatConversationList({ current, onSelect }: Props) {
     await loadConversations();
 
     if (current === deletingId) {
-      onSelect(null as any);
+      onSelect(null as unknown as number);
     }
   }
 
@@ -97,11 +97,11 @@ export default function ChatConversationList({ current, onSelect }: Props) {
 
   return (
     <>
-      <div className="flex flex-col h-full min-h-0 text-white">
-        {/* Header（重做） */}
-        <div className="px-4 py-4 space-y-3 border-b border-white/10">
+      <div className="flex flex-col h-full min-h-0 text-foreground">
+        {/* Header */}
+        <div className="px-4 py-4 space-y-3 border-b border-border">
           <div className="flex items-center justify-between">
-            <h2 className="text-xs uppercase tracking-widest text-white/40">
+            <h2 className="text-xs uppercase tracking-widest text-muted-foreground">
               Conversations
             </h2>
 
@@ -109,11 +109,11 @@ export default function ChatConversationList({ current, onSelect }: Props) {
               onClick={createConversation}
               className="
                 group relative w-7 h-7 flex items-center justify-center
-                rounded-md border border-white/10
+                rounded-md border border-border
                 hover:border-[#4ef2c2]/50 transition
               "
             >
-              <Plus className="w-4 h-4 text-white/60 group-hover:text-[#4ef2c2]" />
+              <Plus className="w-4 h-4 text-muted-foreground group-hover:text-[#4ef2c2]" />
 
               <div
                 className="absolute inset-0 opacity-0 group-hover:opacity-100
@@ -141,7 +141,7 @@ export default function ChatConversationList({ current, onSelect }: Props) {
         </ScrollArea>
       </div>
 
-      {/* dialogs 不动 */}
+      {/* dialogs */}
       <Dialog open={editOpen} onOpenChange={setEditOpen}>
         <DialogContent>
           <DialogHeader>
@@ -162,7 +162,7 @@ export default function ChatConversationList({ current, onSelect }: Props) {
           <DialogHeader>
             <DialogTitle>确认删除？</DialogTitle>
           </DialogHeader>
-          <p>此操作将删除会话及其全部消息。</p>
+          <p className="text-muted-foreground">此操作将删除会话及其全部消息。</p>
           <DialogFooter>
             <Button variant="outline" onClick={() => setDeleteOpen(false)}>
               取消

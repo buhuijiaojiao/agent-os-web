@@ -1,6 +1,7 @@
 // app/layout.tsx
 import "@/app/globals.css";
 import { JetBrains_Mono } from "next/font/google";
+import { ThemeProvider } from "@/components/theme-provider";
 
 const jetBrainsMono = JetBrains_Mono({
   subsets: ["latin"],
@@ -19,9 +20,16 @@ export default function RootLayout({
   children: React.ReactNode;
 }) {
   return (
-    <html lang="en">
+    <html lang="en" suppressHydrationWarning>
       <body className={`${jetBrainsMono.className} min-h-screen bg-background`}>
-        {children}
+        <ThemeProvider
+          attribute="class"
+          defaultTheme="dark"
+          enableSystem
+          disableTransitionOnChange
+        >
+          {children}
+        </ThemeProvider>
       </body>
     </html>
   );

@@ -31,7 +31,7 @@ export default function ChatMessages({ messages, typing }: ChatMessagesProps) {
               <div className="w-1.5 h-1.5 rounded-full bg-[#4ef2c2] animate-bounce delay-150" />
               <div className="w-1.5 h-1.5 rounded-full bg-[#4ef2c2] animate-bounce delay-300" />
             </div>
-            <span className="text-xs text-white/40">thinking</span>
+            <span className="text-xs text-muted-foreground">thinking</span>
           </div>
         )}
 

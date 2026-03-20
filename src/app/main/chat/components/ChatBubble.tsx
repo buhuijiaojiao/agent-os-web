@@ -26,7 +26,7 @@ export default function ChatBubble({ role, content }: ChatBubbleProps) {
             className={cn(
               "transition-all",
               isUser
-                ? "bg-white/10 text-white"
+                ? "bg-muted text-foreground"
                 : "bg-[#4ef2c2]/20 text-[#4ef2c2]",
             )}
           >
@@ -47,8 +47,8 @@ export default function ChatBubble({ role, content }: ChatBubbleProps) {
             "animate-in fade-in-0 slide-in-from-bottom-2",
 
             isUser
-              ? "bg-white/5 text-white/90 rounded-br-md"
-              : "bg-white/[0.03] border border-white/10 rounded-tl-md",
+              ? "bg-muted text-foreground rounded-br-md"
+              : "bg-muted/50 border border-border rounded-tl-md",
           )}
         >
           {/* subtle glow for AI */}
@@ -68,8 +68,15 @@ export default function ChatBubble({ role, content }: ChatBubbleProps) {
               <p className="whitespace-pre-wrap">{content}</p>
             ) : (
               <div
-                className="prose prose-sm max-w-none prose-invert
-                              prose-p:my-2 prose-code:text-[#4ef2c2]"
+                className="prose prose-sm max-w-none
+                              prose-p:my-2 prose-p:text-foreground
+                              prose-headings:text-foreground
+                              prose-strong:text-foreground
+                              prose-code:text-[#4ef2c2] prose-code:bg-muted prose-code:px-1 prose-code:py-0.5 prose-code:rounded
+                              prose-pre:bg-muted prose-pre:text-foreground
+                              prose-a:text-[#4ef2c2]
+                              prose-blockquote:text-muted-foreground
+                              prose-li:text-foreground"
               >
                 <ReactMarkdown remarkPlugins={[remarkGfm]}>
                   {content}

@@ -4,7 +4,7 @@
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { cn } from "@/lib/utils";
-import { Home, MessageSquare, Book, LibraryBig, Bot, Logs } from "lucide-react";
+import { Home, MessageSquare, Book, LibraryBig, Bot, Logs, Terminal } from "lucide-react";
 
 export function AppSidebar() {
   const pathname = usePathname();
@@ -12,6 +12,7 @@ export function AppSidebar() {
   const nav = [
     { label: "Home", href: "/main", icon: Home },
     { label: "Chat", href: "/main/chat", icon: MessageSquare },
+    { label: "Task", href: "/main/task", icon: Terminal },
     { label: "Agent Hub", href: "/main/agent-hub", icon: Bot },
     { label: "Blog", href: "/main/blog", icon: Book },
     { label: "Log", href: "/main/log", icon: Logs },
@@ -19,14 +20,14 @@ export function AppSidebar() {
   ];
 
   return (
-    <aside className="h-full flex flex-col px-3 py-4 text-white">
+    <aside className="h-full flex flex-col px-3 py-4 text-foreground">
       {/* Logo */}
       <div className="px-3 mb-6">
         <div className="text-lg font-semibold tracking-tight flex items-center gap-2">
           <div className="w-2 h-2 rounded-full bg-[#4ef2c2] animate-pulse" />
           Agent OS
         </div>
-        <div className="text-xs text-white/40 mt-1">cognitive workspace</div>
+        <div className="text-xs text-muted-foreground mt-1">cognitive workspace</div>
       </div>
 
       {/* Nav */}
@@ -43,7 +44,7 @@ export function AppSidebar() {
                 "group relative flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm",
                 "transition-all duration-300",
 
-                active ? "text-white" : "text-white/50 hover:text-white",
+                active ? "text-foreground" : "text-muted-foreground hover:text-foreground",
               )}
             >
               {/* active indicator */}
@@ -52,7 +53,7 @@ export function AppSidebar() {
                   "absolute left-0 top-1/2 -translate-y-1/2 h-5 w-[2px] rounded-full transition-all",
                   active
                     ? "bg-[#4ef2c2]"
-                    : "bg-transparent group-hover:bg-white/20",
+                    : "bg-transparent group-hover:bg-border",
                 )}
               />
 
@@ -62,7 +63,7 @@ export function AppSidebar() {
                   "w-4 h-4 transition",
                   active
                     ? "text-[#4ef2c2]"
-                    : "text-white/40 group-hover:text-white",
+                    : "text-muted-foreground group-hover:text-foreground",
                 )}
               />
 
@@ -85,7 +86,7 @@ export function AppSidebar() {
       <div className="flex-1" />
 
       {/* Footer */}
-      <div className="px-3 pt-4 border-t border-white/10 text-xs text-white/40">
+      <div className="px-3 pt-4 border-t border-border text-xs text-muted-foreground">
         v0.1.0
       </div>
     </aside>

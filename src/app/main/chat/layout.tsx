@@ -23,8 +23,8 @@ export default function ChatLayout() {
       <aside
         className="
           w-[280px] shrink-0
-          border-r border-white/10
-          bg-[#0f1115]/80 backdrop-blur-xl
+          border-r border-border
+          bg-card/80 backdrop-blur-xl
           flex flex-col min-h-0
         "
       >
@@ -45,6 +45,7 @@ export default function ChatLayout() {
     </div>
   );
 }
+
 function EmptyState() {
   return (
     <div className="flex-1 flex items-center justify-center relative">
@@ -57,16 +58,16 @@ function EmptyState() {
       />
 
       <div className="relative text-center space-y-4">
-        <h2 className="text-xl font-medium tracking-tight text-white/90">
+        <h2 className="text-xl font-medium tracking-tight text-foreground/90">
           Start a conversation
         </h2>
 
-        <p className="text-sm text-white/40 max-w-sm mx-auto">
+        <p className="text-sm text-muted-foreground max-w-sm mx-auto">
           Your AI remembers context, adapts to your thinking, and evolves with
           you.
         </p>
 
-        <div className="text-xs text-white/30">
+        <div className="text-xs text-muted-foreground">
           Select a thread or create a new one
         </div>
       </div>
