@@ -40,8 +40,9 @@ function MainLayoutContent({
         {/* Sidebar */}
         <div
           className={cn(
-            "rounded-2xl transition-all duration-300 ease-in-out",
-            "bg-card/80 backdrop-blur-xl border border-border shadow-lg overflow-hidden",
+            "rounded-2xl overflow-hidden",
+            "bg-card/80 backdrop-blur-xl border border-border shadow-lg",
+            "transition-[width] duration-300 ease-[cubic-bezier(0.4,0,0.2,1)]",
             isCollapsed ? "w-[68px]" : "w-[260px]"
           )}
         >

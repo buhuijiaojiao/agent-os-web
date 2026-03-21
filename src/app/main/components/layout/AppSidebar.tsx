@@ -4,7 +4,7 @@
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { cn } from "@/lib/utils";
-import { Home, MessageSquare, Book, LibraryBig, Bot, Logs, Terminal, ChevronLeft, ChevronRight } from "lucide-react";
+import { Home, MessageSquare, Book, LibraryBig, Bot, Logs, Terminal, PanelLeftClose, PanelLeft } from "lucide-react";
 import { useSidebar } from "./SidebarContext";
 import { Tooltip, TooltipContent, TooltipTrigger } from "@/components/ui/tooltip";
 
@@ -22,29 +22,49 @@ export function AppSidebar() {
     { label: "Knowledge", href: "/main/knowledge-base", icon: LibraryBig },
   ];
 
+  // Toggle 按钮
+  const ToggleButton = () => (
+    <button
+      onClick={toggle}
+      className={cn(
+        "flex items-center justify-center",
+        "w-8 h-8 rounded-lg",
+        "text-muted-foreground hover:text-foreground hover:bg-muted/50",
+        "transition-colors duration-200"
+      )}
+      aria-label={isCollapsed ? "展开侧边栏" : "收起侧边栏"}
+    >
+      {isCollapsed ? (
+        <PanelLeft className="w-4 h-4" />
+      ) : (
+        <PanelLeftClose className="w-4 h-4" />
+      )}
+    </button>
+  );
+
   return (
-    <aside className="h-full flex flex-col py-4 text-foreground">
-      {/* Logo */}
-      <div className={cn(
-        "px-3 mb-6 transition-all duration-300",
-        isCollapsed ? "flex justify-center" : ""
-      )}>
-        <div className={cn(
-          "font-semibold tracking-tight flex items-center gap-2",
-          isCollapsed ? "justify-center" : ""
-        )}>
-          <div className="w-2 h-2 rounded-full bg-[#4ef2c2] animate-pulse shrink-0" />
-          {!isCollapsed && <span className="text-lg">Agent OS</span>}
-        </div>
-        {!isCollapsed && (
-          <div className="text-xs text-muted-foreground mt-1 ml-4">
-            cognitive workspace
+    <aside className="h-full flex flex-col text-foreground">
+      {/* Header - 固定高度 */}
+      <div className="h-14 px-3 flex items-center border-b border-border/50">
+        {isCollapsed ? (
+          /* 折叠态：按钮居中 */
+          <div className="w-full flex justify-center">
+            <ToggleButton />
           </div>
+        ) : (
+          /* 展开态：Logo 左侧 + 按钮右侧 */
+          <>
+            <span className="text-base font-semibold tracking-tight whitespace-nowrap">
+              Agent OS
+            </span>
+            <div className="flex-1" />
+            <ToggleButton />
+          </>
         )}
       </div>
 
-      {/* Nav */}
-      <nav className="space-y-1 px-2">
+      {/* Nav - 图标位置固定 */}
+      <nav className="flex-1 py-2 px-2 overflow-y-auto">
         {nav.map((item) => {
           const Icon = item.icon;
           const active = pathname === item.href;
@@ -54,43 +74,50 @@ export function AppSidebar() {
               key={item.href}
               href={item.href}
               className={cn(
-                "group relative flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm",
-                "transition-all duration-300",
-                isCollapsed && "justify-center px-0",
+                "group relative flex items-center h-10 rounded-lg text-sm",
+                "transition-colors duration-200",
                 active ? "text-foreground" : "text-muted-foreground hover:text-foreground",
               )}
             >
-              {/* active indicator */}
+              {/* 图标容器 - 固定宽度 */}
+              <div className="w-[52px] flex items-center justify-center shrink-0">
+                {/* active indicator */}
+                <div
+                  className={cn(
+                    "absolute left-0 top-1/2 -translate-y-1/2 h-5 w-[2px] rounded-full transition-colors",
+                    active
+                      ? "bg-[#4ef2c2]"
+                      : "bg-transparent group-hover:bg-border",
+                  )}
+                />
+
+                <Icon
+                  className={cn(
+                    "w-4 h-4 shrink-0",
+                    active
+                      ? "text-[#4ef2c2]"
+                      : "text-muted-foreground group-hover:text-foreground",
+                  )}
+                />
+              </div>
+
+              {/* label - 展开时显示 */}
               <div
                 className={cn(
-                  "absolute top-1/2 -translate-y-1/2 h-5 w-[2px] rounded-full transition-all",
-                  isCollapsed ? "left-0" : "left-0",
-                  active
-                    ? "bg-[#4ef2c2]"
-                    : "bg-transparent group-hover:bg-border",
+                  "flex-1 overflow-hidden",
+                  "transition-all duration-300 ease-in-out",
+                  isCollapsed ? "opacity-0 max-w-0 ml-0" : "opacity-100 max-w-[200px] ml-1"
                 )}
-              />
-
-              {/* icon */}
-              <Icon
-                className={cn(
-                  "w-4 h-4 transition shrink-0",
-                  active
-                    ? "text-[#4ef2c2]"
-                    : "text-muted-foreground group-hover:text-foreground",
-                )}
-              />
-
-              {/* label */}
-              {!isCollapsed && (
-                <span className="tracking-tight">{item.label}</span>
-              )}
+              >
+                <span className="whitespace-nowrap tracking-tight">
+                  {item.label}
+                </span>
+              </div>
 
               {/* hover glow */}
               <div
                 className={cn(
-                  "absolute inset-0 rounded-lg opacity-0 group-hover:opacity-100",
-                  "transition duration-300",
+                  "absolute inset-0 rounded-lg opacity-0 group-hover:opacity-100 transition-opacity duration-200 -z-10",
                   isCollapsed
                     ? "bg-[radial-gradient(circle,rgba(78,242,194,0.12),transparent_70%)]"
                     : "bg-[radial-gradient(circle_at_left,rgba(78,242,194,0.12),transparent_60%)]"
@@ -117,39 +144,16 @@ export function AppSidebar() {
         })}
       </nav>
 
-      <div className="flex-1" />
-
-      {/* Toggle Button */}
-      <div className={cn(
-        "px-2 border-t border-border pt-3",
-        isCollapsed ? "flex justify-center" : ""
-      )}>
-        <button
-          onClick={toggle}
-          className={cn(
-            "w-full flex items-center gap-2 px-3 py-2 rounded-lg",
-            "text-muted-foreground hover:text-foreground hover:bg-muted/50",
-            "transition-all duration-300",
-            isCollapsed && "justify-center px-0"
-          )}
-        >
-          {isCollapsed ? (
-            <ChevronRight className="w-4 h-4" />
-          ) : (
-            <>
-              <ChevronLeft className="w-4 h-4" />
-              <span className="text-xs">收起</span>
-            </>
-          )}
-        </button>
+      {/* Footer - 展开时显示 */}
+      <div
+        className={cn(
+          "px-4 flex items-center border-t border-border/50 text-xs text-muted-foreground",
+          "transition-all duration-300 ease-in-out overflow-hidden",
+          isCollapsed ? "opacity-0 h-0 py-0" : "opacity-100 h-10 py-2"
+        )}
+      >
+        v0.1.0
       </div>
-
-      {/* Footer */}
-      {!isCollapsed && (
-        <div className="px-5 pt-2 text-xs text-muted-foreground">
-          v0.1.0
-        </div>
-      )}
     </aside>
   );
 }
