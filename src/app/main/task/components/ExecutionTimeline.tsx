@@ -3,22 +3,9 @@
 import { cn } from "@/lib/utils";
 import { Check, Loader2, Circle, Wrench, Clock, ArrowRight } from "lucide-react";
 import { Button } from "@/components/ui/button";
+import type { ExecutionStep, StepStatus, StepType } from "@/types/task";
 
-export type StepStatus = "pending" | "running" | "waiting" | "done";
-export type StepType = "thinking" | "tool";
-
-export interface ExecutionStep {
-  id: string;
-  title: string;
-  type: StepType;
-  status: StepStatus;
-  toolName?: string;
-  toolInput?: string;
-  description?: string;
-  startTime?: number;
-  endTime?: number;
-  duration?: number;
-}
+export type { ExecutionStep, StepStatus, StepType };
 
 interface ExecutionTimelineProps {
   steps: ExecutionStep[];

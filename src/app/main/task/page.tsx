@@ -3,13 +3,19 @@
 import { useState, useCallback, useEffect, useRef } from "react";
 import { Button } from "@/components/ui/button";
 import { Textarea } from "@/components/ui/textarea";
-import { ExecutionTimeline, ExecutionStep } from "./components/ExecutionTimeline";
+import { ExecutionTimeline } from "./components/ExecutionTimeline";
 import { TaskResult } from "./components/TaskResult";
-import { TaskHistory, TaskRecord, ExecutionStepRecord } from "./components/TaskHistory";
+import { TaskHistory } from "./components/TaskHistory";
 import { TaskDetail } from "./components/TaskDetail";
-import { ExecutionControl, ExecutionControlMode, ExecutionModeDescription } from "./components/ExecutionControl";
+import { ExecutionControl, ExecutionModeDescription } from "./components/ExecutionControl";
 import { Play, RotateCcw, AlertCircle, History, Plus, ChevronLeft } from "lucide-react";
 import { cn } from "@/lib/utils";
+import type {
+  ExecutionStep,
+  TaskRecord,
+  ExecutionStepRecord,
+  ExecutionControlMode
+} from "@/types/task";
 
 const STORAGE_KEY = "task_history";
 
@@ -53,8 +59,8 @@ function saveTaskHistory(tasks: TaskRecord[]) {
   }
 }
 
-// 格式化耗时
-function formatDuration(ms: number): string {
+// 格式化耗时 - 保留用于其他组件
+export function formatDuration(ms: number): string {
   if (ms < 1000) return `${Math.round(ms)}ms`;
   return `${(ms / 1000).toFixed(1)}s`;
 }
@@ -80,11 +86,13 @@ export default function TaskPage() {
     steps: ExecutionStep[];
     startTime: number;
     resolve: (() => void) | null;
+    runNextStep: (() => void) | null;
   }>({
     currentIndex: 0,
     steps: [],
     startTime: 0,
     resolve: null,
+    runNextStep: null,
   });
 
   // 加载历史记录
@@ -139,7 +147,10 @@ export default function TaskPage() {
 
     // 继续执行下一步
     executionRef.current.currentIndex = stepIndex + 1;
-    runNextStep();
+    // 调用存储的 runNextStep 引用
+    if (executionRef.current.runNextStep) {
+      executionRef.current.runNextStep();
+    }
   }, [executeStep]);
 
   // 运行下一个步骤
@@ -205,8 +216,16 @@ export default function TaskPage() {
 
     // 继续下一步
     executionRef.current.currentIndex = currentIndex + 1;
-    runNextStep();
+    // 使用 ref 调用自身避免循环引用
+    if (executionRef.current.runNextStep) {
+      executionRef.current.runNextStep();
+    }
   }, [controlMode, needsConfirmation, executeStep, taskInput]);
+
+  // 存储 runNextStep 到 ref
+  useEffect(() => {
+    executionRef.current.runNextStep = runNextStep;
+  }, [runNextStep]);
 
   // 开始执行任务
   const handleRunTask = useCallback(async () => {
@@ -225,6 +244,7 @@ export default function TaskPage() {
       steps: newSteps,
       startTime: Date.now(),
       resolve: null,
+      runNextStep: executionRef.current.runNextStep,
     };
 
     // 开始执行

@@ -4,18 +4,8 @@ import { useEffect, useState } from "react";
 import ChatMessages from "./ChatMessages";
 import ChatInput from "./ChatInput";
 import { httpGet, httpPost } from "@/lib/http";
-
-interface RawMessage {
-  id: number;
-  senderType: number;
-  content: string;
-}
-
-interface Message {
-  id: number;
-  role: "user" | "assistant";
-  content: string;
-}
+import type { Message, RawMessage } from "@/types/conversation";
+import { transformRawMessage } from "@/types/conversation";
 
 interface Props {
   conversationId: number;
@@ -34,13 +24,7 @@ export default function ChatConversationPanel({ conversationId }: Props) {
       `/api/proxy/message/list?conversationId=${conversationId}`,
     );
 
-    setMessages(
-      data.map((m) => ({
-        id: m.id,
-        role: m.senderType === 1 ? "user" : "assistant",
-        content: m.content,
-      })),
-    );
+    setMessages(data.map(transformRawMessage));
   }
 
   async function sendMessage(content: string) {

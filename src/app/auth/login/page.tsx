@@ -1,11 +1,10 @@
 "use client";
 
 import React, { useState, useCallback } from "react";
-import { useRouter } from "next/navigation";
-import { httpPost } from "@/lib/http";
+import { useAuth } from "@/hooks/useAuth";
 
 export default function LoginPage() {
-  const router = useRouter();
+  const { login } = useAuth();
 
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
@@ -32,18 +31,8 @@ export default function LoginPage() {
       showMessage(null, false);
 
       try {
-        const token = await httpPost<string>("/api/proxy/user/doLogin", {
-          email,
-          password,
-        });
-
-        localStorage.setItem("authToken", token);
-
+        await login(email, password);
         showMessage("登录成功，正在进入系统...", false);
-
-        setTimeout(() => {
-          router.replace("/main");
-        }, 500);
       } catch (error) {
         const errorMessage =
           error instanceof Error ? error.message : "登录失败，请稍后重试。";
@@ -52,7 +41,7 @@ export default function LoginPage() {
         setIsLoading(false);
       }
     },
-    [email, password, router],
+    [email, password, login],
   );
 
   return (
@@ -113,7 +102,7 @@ export default function LoginPage() {
             label="Email"
             value={email}
             disabled={isLoading}
-            onChange={(e: any) => setEmail(e.target.value)}
+            onChange={(e: React.ChangeEvent<HTMLInputElement>) => setEmail(e.target.value)}
           />
 
           <InputField
@@ -121,7 +110,7 @@ export default function LoginPage() {
             type="password"
             value={password}
             disabled={isLoading}
-            onChange={(e: any) => setPassword(e.target.value)}
+            onChange={(e: React.ChangeEvent<HTMLInputElement>) => setPassword(e.target.value)}
           />
 
           <button
@@ -157,7 +146,19 @@ export default function LoginPage() {
     </div>
   );
 }
-function InputField({ label, type = "text", value, onChange, disabled }: any) {
+function InputField({
+  label,
+  type = "text",
+  value,
+  onChange,
+  disabled
+}: {
+  label: string;
+  type?: string;
+  value: string;
+  onChange: (e: React.ChangeEvent<HTMLInputElement>) => void;
+  disabled?: boolean;
+}) {
   return (
     <div className="space-y-1">
       <label className="text-xs text-white/40">{label}</label>
@@ -172,7 +173,7 @@ function InputField({ label, type = "text", value, onChange, disabled }: any) {
       >
         {/* glow */}
         <div
-          className="pointer-events-none absolute inset-0 opacity-0 
+          className="pointer-events-none absolute inset-0 opacity-0
                         focus-within:opacity-100 transition
                         bg-[radial-gradient(circle,rgba(78,242,194,0.15),transparent_70%)]"
         />

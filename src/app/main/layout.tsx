@@ -3,87 +3,75 @@
 
 import { AppSidebar } from "./components/layout/AppSidebar";
 import { AppTopBar } from "./components/layout/AppTopBar";
-import { SidebarProvider, useSidebar } from "./components/layout/SidebarContext";
+import { useSidebarStore } from "@/store/sidebar";
 import { TooltipProvider } from "@/components/ui/tooltip";
 import { cn } from "@/lib/utils";
-
-function MainLayoutContent({
-  children,
-}: {
-  children: React.ReactNode;
-}) {
-  const { isCollapsed } = useSidebar();
-
-  return (
-    <div className="relative h-screen overflow-hidden bg-background text-foreground">
-      {/* 🌌 Background Atmosphere */}
-      <div
-        className="
-          pointer-events-none absolute inset-0
-          bg-[radial-gradient(circle_at_20%_20%,rgba(78,242,194,0.08),transparent_40%),
-              radial-gradient(circle_at_80%_0%,rgba(78,242,194,0.05),transparent_50%)]
-        "
-      />
-
-      {/* subtle grid */}
-      <div
-        className="
-          pointer-events-none absolute inset-0 opacity-[0.03]
-          [background-image:linear-gradient(to_right,currentColor_1px,transparent_1px),
-                           linear-gradient(to_bottom,currentColor_1px,transparent_1px)]
-          [background-size:48px_48px]
-        "
-      />
-
-      {/* 🧱 Main Frame */}
-      <div className="relative flex h-full p-3 gap-3">
-        {/* Sidebar */}
-        <div
-          className={cn(
-            "rounded-2xl overflow-hidden",
-            "bg-card/80 backdrop-blur-xl border border-border shadow-lg",
-            "transition-[width] duration-300 ease-[cubic-bezier(0.4,0,0.2,1)]",
-            isCollapsed ? "w-[68px]" : "w-[260px]"
-          )}
-        >
-          <AppSidebar />
-        </div>
-
-        {/* Content Area */}
-        <div
-          className="
-            flex-1 flex flex-col
-            rounded-2xl
-            bg-card/70
-            backdrop-blur-xl
-            border border-border
-            shadow-lg
-            overflow-hidden
-          "
-        >
-          {/* TopBar */}
-          <div className="border-b border-border">
-            <AppTopBar />
-          </div>
-
-          {/* Main */}
-          <main className="flex-1 overflow-auto px-8 py-8">{children}</main>
-        </div>
-      </div>
-    </div>
-  );
-}
 
 export default function MainLayout({
   children,
 }: {
   children: React.ReactNode;
 }) {
+  const isCollapsed = useSidebarStore((state) => state.isCollapsed);
+
   return (
     <TooltipProvider delayDuration={0}>
-      <SidebarProvider>
-        <MainLayoutContent>{children}</MainLayoutContent>
-      </SidebarProvider>
+      <div className="relative h-screen overflow-hidden bg-background text-foreground">
+        {/* 🌌 Background Atmosphere */}
+        <div
+          className="
+            pointer-events-none absolute inset-0
+            bg-[radial-gradient(circle_at_20%_20%,rgba(78,242,194,0.08),transparent_40%),
+                radial-gradient(circle_at_80%_0%,rgba(78,242,194,0.05),transparent_50%)]
+          "
+        />
+
+        {/* subtle grid */}
+        <div
+          className="
+            pointer-events-none absolute inset-0 opacity-[0.03]
+            [background-image:linear-gradient(to_right,currentColor_1px,transparent_1px),
+                             linear-gradient(to_bottom,currentColor_1px,transparent_1px)]
+            [background-size:48px_48px]
+          "
+        />
+
+        {/* 🧱 Main Frame */}
+        <div className="relative flex h-full p-3 gap-3">
+          {/* Sidebar */}
+          <div
+            className={cn(
+              "rounded-2xl overflow-hidden",
+              "bg-card/80 backdrop-blur-xl border border-border shadow-lg",
+              "transition-[width] duration-300 ease-[cubic-bezier(0.4,0,0.2,1)]",
+              isCollapsed ? "w-[68px]" : "w-[260px]"
+            )}
+          >
+            <AppSidebar />
+          </div>
+
+          {/* Content Area */}
+          <div
+            className="
+              flex-1 flex flex-col
+              rounded-2xl
+              bg-card/70
+              backdrop-blur-xl
+              border border-border
+              shadow-lg
+              overflow-hidden
+            "
+          >
+            {/* TopBar */}
+            <div className="border-b border-border">
+              <AppTopBar />
+            </div>
+
+            {/* Main */}
+            <main className="flex-1 overflow-auto px-8 py-8">{children}</main>
+          </div>
+        </div>
+      </div>
     </TooltipProvider>
   );
 }

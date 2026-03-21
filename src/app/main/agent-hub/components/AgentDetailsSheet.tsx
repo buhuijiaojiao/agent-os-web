@@ -16,17 +16,7 @@ import { Textarea } from "@/components/ui/textarea";
 import { Label } from "@/components/ui/label";
 import { Code, Settings, Zap, MemoryStick } from "lucide-react";
 import { Badge } from "@/components/ui/badge";
-
-// 简化版 Agent 数据类型
-interface AgentDetails {
-  id: string;
-  name: string;
-  role: string;
-  systemPrompt: string; // 核心：Agent Persona Prompt
-  memoryId: string | null;
-  toolIds: string[]; // 核心：引用的 MCP Service IDs
-  // ... 其他配置
-}
+import type { AgentDetails } from "@/types/agent";
 
 interface AgentDetailsSheetProps {
   agentId: string | null;

@@ -5,25 +5,17 @@ import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { cn } from "@/lib/utils";
 import { Home, MessageSquare, Book, LibraryBig, Bot, Logs, Terminal, PanelLeftClose, PanelLeft } from "lucide-react";
-import { useSidebar } from "./SidebarContext";
+import { useSidebarStore } from "@/store/sidebar";
 import { Tooltip, TooltipContent, TooltipTrigger } from "@/components/ui/tooltip";
 
-export function AppSidebar() {
-  const pathname = usePathname();
-  const { isCollapsed, toggle } = useSidebar();
-
-  const nav = [
-    { label: "Home", href: "/main", icon: Home },
-    { label: "Chat", href: "/main/chat", icon: MessageSquare },
-    { label: "Task", href: "/main/task", icon: Terminal },
-    { label: "Agent Hub", href: "/main/agent-hub", icon: Bot },
-    { label: "Blog", href: "/main/blog", icon: Book },
-    { label: "Log", href: "/main/log", icon: Logs },
-    { label: "Knowledge", href: "/main/knowledge-base", icon: LibraryBig },
-  ];
-
-  // Toggle 按钮
-  const ToggleButton = () => (
+function ToggleButton({
+  isCollapsed,
+  toggle
+}: {
+  isCollapsed: boolean;
+  toggle: () => void;
+}) {
+  return (
     <button
       onClick={toggle}
       className={cn(
@@ -41,6 +33,21 @@ export function AppSidebar() {
       )}
     </button>
   );
+}
+
+export function AppSidebar() {
+  const pathname = usePathname();
+  const { isCollapsed, toggle } = useSidebarStore();
+
+  const nav = [
+    { label: "Home", href: "/main", icon: Home },
+    { label: "Chat", href: "/main/chat", icon: MessageSquare },
+    { label: "Task", href: "/main/task", icon: Terminal },
+    { label: "Agent Hub", href: "/main/agent-hub", icon: Bot },
+    { label: "Blog", href: "/main/blog", icon: Book },
+    { label: "Log", href: "/main/log", icon: Logs },
+    { label: "Knowledge", href: "/main/knowledge-base", icon: LibraryBig },
+  ];
 
   return (
     <aside className="h-full flex flex-col text-foreground">
@@ -49,7 +56,7 @@ export function AppSidebar() {
         {isCollapsed ? (
           /* 折叠态：按钮居中 */
           <div className="w-full flex justify-center">
-            <ToggleButton />
+            <ToggleButton isCollapsed={isCollapsed} toggle={toggle} />
           </div>
         ) : (
           /* 展开态：Logo 左侧 + 按钮右侧 */
@@ -58,7 +65,7 @@ export function AppSidebar() {
               Agent OS
             </span>
             <div className="flex-1" />
-            <ToggleButton />
+            <ToggleButton isCollapsed={isCollapsed} toggle={toggle} />
           </>
         )}
       </div>

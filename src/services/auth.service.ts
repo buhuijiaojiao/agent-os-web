@@ -1,0 +1,6 @@
+import { httpPost } from '@/lib/http';
+
+export const authService = {
+  login: (email: string, password: string) =>
+    httpPost<string>('/api/proxy/user/doLogin', { email, password }),
+};

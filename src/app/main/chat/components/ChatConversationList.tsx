@@ -14,11 +14,7 @@ import {
 } from "@/components/ui/dialog";
 import { Input } from "@/components/ui/input";
 import { httpGet, httpPost, httpDelete, httpPut } from "@/lib/http";
-
-interface Conversation {
-  id: number;
-  title: string;
-}
+import type { Conversation } from "@/types/conversation";
 
 interface Props {
   current: number | null;

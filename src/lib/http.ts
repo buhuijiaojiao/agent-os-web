@@ -1,3 +1,5 @@
+import { useAuthStore } from '@/store/auth';
+
 /**
  * 后端统一返回结构
  * 对应 Java 的 Result<T>
@@ -12,22 +14,23 @@ export interface Result<T> {
  * HTTP 基础请求方法
  */
 async function request<T>(url: string, options: RequestInit = {}): Promise<T> {
-  const token = localStorage.getItem("authToken");
+  // 从 Zustand store 获取 token
+  const token = useAuthStore.getState().token;
 
   // 基础 headers 包含 Content-Type
-  const headers: HeadersInit = {
-    "Content-Type": "application/json",
-    ...(options.headers || {}),
+  const headers: Record<string, string> = {
+    'Content-Type': 'application/json',
+    ...(options.headers as Record<string, string> || {}),
   };
 
   // 携带 Token 添加到 Authorization 头部
   if (token) {
-    headers["Authorization"] = `Bearer ${token}`; // 标准格式：Bearer + Token
+    headers['Authorization'] = `Bearer ${token}`;
   }
 
   const res = await fetch(url, {
-    cache: "no-store",
-    headers, // 使用最终 Headers
+    cache: 'no-store',
+    headers,
     ...options,
   });
 
@@ -40,16 +43,16 @@ async function request<T>(url: string, options: RequestInit = {}): Promise<T> {
   const result: Result<T> = await res.json();
 
   // ⭐ 统一处理 token 失效
-  if (result.code === "4001") {
-    localStorage.removeItem("authToken");
-    // 跳转登录页（不能用 useRouter，这里是普通函数）
-    window.location.href = "/auth/login";
+  if (result.code === '4001') {
+    useAuthStore.getState().clearToken();
+    // 跳转登录页
+    window.location.href = '/auth/login';
     // 中断 Promise 链
-    return Promise.reject(new Error(result.message || "登录状态已失效，请重新登录。"));
+    return Promise.reject(new Error(result.message || '登录状态已失效，请重新登录。'));
   }
 
-  if (result.code !== "2000") {
-    throw new Error(result.message || "业务处理失败");
+  if (result.code !== '2000') {
+    throw new Error(result.message || '业务处理失败');
   }
 
   return result.data;
@@ -58,32 +61,32 @@ async function request<T>(url: string, options: RequestInit = {}): Promise<T> {
 /**
  * GET 请求
  */
-export const httpGet = <T>(url: string) => request<T>(url, { method: "GET" });
+export const httpGet = <T>(url: string) => request<T>(url, { method: 'GET' });
 
 /**
  * POST 请求
  */
-export const httpPost = <T>(url: string, body?: any) =>
+export const httpPost = <T>(url: string, body?: unknown) =>
   request<T>(url, {
-    method: "POST",
+    method: 'POST',
     body: JSON.stringify(body || {}),
   });
 
 /**
  * PUT 请求
  */
-export const httpPut = <T>(url: string, body?: any) =>
+export const httpPut = <T>(url: string, body?: unknown) =>
   request<T>(url, {
-    method: "PUT",
+    method: 'PUT',
     body: JSON.stringify(body || {}),
   });
 
 /**
  * PATCH 请求
  */
-export const httpPatch = <T>(url: string, body?: any) =>
+export const httpPatch = <T>(url: string, body?: unknown) =>
   request<T>(url, {
-    method: "PATCH",
+    method: 'PATCH',
     body: JSON.stringify(body || {}),
   });
 
@@ -91,4 +94,4 @@ export const httpPatch = <T>(url: string, body?: any) =>
  * DELETE 请求
  */
 export const httpDelete = <T>(url: string) =>
-  request<T>(url, { method: "DELETE" });
+  request<T>(url, { method: 'DELETE' });

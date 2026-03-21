@@ -9,15 +9,7 @@ import {
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Settings, Brain, Zap, MemoryStick } from "lucide-react";
-
-interface Agent {
-  id: string;
-  name: string;
-  role: string;
-  description: string;
-  tools: number;
-  memoryId: string | null;
-}
+import type { Agent } from "@/types/agent";
 
 interface AgentCardProps {
   agent: Agent;

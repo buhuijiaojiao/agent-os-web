@@ -2,8 +2,9 @@
 
 import { cn } from "@/lib/utils";
 import { Zap, Compass, Hand } from "lucide-react";
+import type { ExecutionControlMode } from "@/types/task";
 
-export type ExecutionControlMode = "autonomous" | "guided" | "manual";
+export type { ExecutionControlMode };
 
 interface ExecutionControlProps {
   mode: ExecutionControlMode;

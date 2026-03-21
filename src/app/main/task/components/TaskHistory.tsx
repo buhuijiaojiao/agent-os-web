@@ -2,31 +2,9 @@
 
 import { cn } from "@/lib/utils";
 import { CheckCircle, XCircle, Clock, Wrench } from "lucide-react";
+import type { TaskRecord, ExecutionStepRecord, StepType } from "@/types/task";
 
-export type TaskRecordStatus = "success" | "error";
-
-export interface TaskRecord {
-  id: string;
-  input: string;
-  status: TaskRecordStatus;
-  steps: ExecutionStepRecord[];
-  result: string;
-  createdAt: number;
-  totalDuration?: number;
-}
-
-export type StepType = "thinking" | "tool";
-
-export interface ExecutionStepRecord {
-  id: string;
-  title: string;
-  type: StepType;
-  status: "done";
-  toolName?: string;
-  toolInput?: string;
-  description?: string;
-  duration?: number;
-}
+export type { TaskRecord, ExecutionStepRecord, StepType };
 
 interface TaskHistoryProps {
   tasks: TaskRecord[];
