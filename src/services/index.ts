@@ -1,2 +1,2 @@
 export { authService } from './auth.service';
-export { conversationService } from './conversation.service';
+export { chatService } from './chat.service';

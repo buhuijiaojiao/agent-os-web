@@ -3,7 +3,7 @@
 import { useEffect, useState } from "react";
 import ChatMessages from "./ChatMessages";
 import ChatInput from "./ChatInput";
-import { httpGet, httpPost } from "@/lib/http";
+import { chatService } from "@/services/chat.service";
 import type { Message, RawMessage } from "@/types/conversation";
 import { transformRawMessage } from "@/types/conversation";
 
@@ -20,10 +20,7 @@ export default function ChatConversationPanel({ conversationId }: Props) {
   }, [conversationId]);
 
   async function loadMessages() {
-    const data = await httpGet<RawMessage[]>(
-      `/api/proxy/message/list?conversationId=${conversationId}`,
-    );
-
+    const data = await chatService.getMessages(conversationId);
     setMessages(data.map(transformRawMessage));
   }
 
@@ -40,10 +37,7 @@ export default function ChatConversationPanel({ conversationId }: Props) {
     setTyping(true);
 
     try {
-      const reply = await httpPost<string>("/api/proxy/message/chat", {
-        conversationId,
-        userMessageContent: content,
-      });
+      const reply = await chatService.sendMessage(conversationId, content);
 
       setMessages((prev) => [
         ...prev,

@@ -13,7 +13,7 @@ import {
   DialogFooter,
 } from "@/components/ui/dialog";
 import { Input } from "@/components/ui/input";
-import { httpGet, httpPost, httpDelete, httpPut } from "@/lib/http";
+import { chatService } from "@/services/chat.service";
 import type { Conversation } from "@/types/conversation";
 
 interface Props {
@@ -32,7 +32,7 @@ export default function ChatConversationList({ current, onSelect }: Props) {
   const [deletingId, setDeletingId] = useState<number | null>(null);
 
   async function loadConversations() {
-    const list = await httpGet<Conversation[]>("/api/proxy/conversation/list");
+    const list = await chatService.getList();
     setConversations(list);
 
     if (!current && list.length > 0) {
@@ -41,9 +41,7 @@ export default function ChatConversationList({ current, onSelect }: Props) {
   }
 
   async function createConversation() {
-    const newId = await httpPost<number>("/api/proxy/conversation/create", {
-      conversationTitle: "New thread",
-    });
+    const newId = await chatService.create("New thread");
     await loadConversations();
     onSelect(newId);
   }
@@ -57,10 +55,7 @@ export default function ChatConversationList({ current, onSelect }: Props) {
   async function confirmEdit() {
     if (!editingId) return;
 
-    await httpPut("/api/proxy/conversation/update", {
-      conversationId: String(editingId),
-      conversationTitle: editValue,
-    });
+    await chatService.updateTitle(editingId, editValue);
 
     setEditOpen(false);
     await loadConversations();
@@ -75,9 +70,7 @@ export default function ChatConversationList({ current, onSelect }: Props) {
   async function confirmDelete() {
     if (!deletingId) return;
 
-    await httpDelete(
-      `/api/proxy/conversation/delete?conversationId=${deletingId}`,
-    );
+    await chatService.delete(deletingId);
 
     setDeleteOpen(false);
     await loadConversations();
