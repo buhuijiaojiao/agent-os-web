@@ -17,9 +17,9 @@
 ```typescript
 // 请求方法
 export const httpGet = <T>(url: string) => request<T>(url, { method: "GET" });
-export const httpPost = <T>(url: string, body?: any) => request<T>(url, { method: "POST", body });
-export const httpPut = <T>(url: string, body?: any) => request<T>(url, { method: "PUT", body });
-export const httpPatch = <T>(url: string, body?: any) => request<T>(url, { method: "PATCH", body });
+export const httpPost = <T>(url: string, body?: unknown) => request<T>(url, { method: "POST", body: JSON.stringify(body || {}) });
+export const httpPut = <T>(url: string, body?: unknown) => request<T>(url, { method: "PUT", body: JSON.stringify(body || {}) });
+export const httpPatch = <T>(url: string, body?: unknown) => request<T>(url, { method: "PATCH", body: JSON.stringify(body || {}) });
 export const httpDelete = <T>(url: string) => request<T>(url, { method: "DELETE" });
 ```
 
@@ -54,10 +54,22 @@ interface Result<T> {
 ### HTTP 请求封装
 
 1. 自动添加 `Content-Type: application/json`
-2. 自动从 `localStorage.authToken` 读取并添加 `Authorization` 头
+2. 自动从 **Zustand store** (`useAuthStore`) 读取并添加 `Authorization` 头
 3. 统一处理后端响应格式
 4. Token 失效自动跳转登录页
 5. 统一错误处理
+
+**重要变更**: Token 不再从 `localStorage.authToken` 读取，而是从 Zustand store 获取：
+
+```typescript
+import { useAuthStore } from '@/store/auth';
+
+// 获取 token
+const token = useAuthStore.getState().token;
+
+// 清除 token（失效时）
+useAuthStore.getState().clearToken();
+```
 
 ### cn 函数
 
@@ -86,6 +98,8 @@ const token = await httpPost<string>("/api/proxy/user/doLogin", {
 <div className={cn("base-class", condition && "conditional-class")} />
 ```
 
+**推荐**: 在实际开发中，建议使用 `src/services/` 中的服务封装，而非直接调用 HTTP 方法。
+
 ## 相关文件清单
 
 | 文件 | 说明 |
@@ -94,6 +108,12 @@ const token = await httpPost<string>("/api/proxy/user/doLogin", {
 | `utils.ts` | 工具函数 (cn) |
 
 ## 变更记录 (Changelog)
+
+### 2026-03-22 - Token 来源变更
+
+- Token 不再从 `localStorage.authToken` 读取
+- 改为从 Zustand store (`useAuthStore`) 获取
+- Token 失效时调用 `useAuthStore.getState().clearToken()` 清除
 
 ### 2026-03-21 - 更新
 

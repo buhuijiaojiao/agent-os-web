@@ -16,15 +16,17 @@
 
 ### API 调用
 
-| 端点 | 方法 | 说明 |
-|------|------|------|
-| `/api/proxy/user/doLogin` | POST | 用户登录 |
+通过 `useAuth` Hook 调用认证服务：
+
+| 方法 | API 端点 | 说明 |
+|------|----------|------|
+| `login(email, password)` | `/api/proxy/auth/login` | 用户登录 |
 
 ### 请求参数
 
 ```typescript
 // 登录请求
-{
+interface LoginRequest {
   email: string;
   password: string;
 }
@@ -35,21 +37,33 @@ string // Token
 
 ## 关键依赖与配置
 
-- `src/lib/http.ts` - HTTP 请求封装
-- `localStorage.authToken` - Token 存储
+- `src/hooks/useAuth.ts` - 认证 Hook
+- `src/services/auth.service.ts` - 认证服务
+- `src/store/auth.ts` - 认证状态 Store (Zustand)
 
 ## 核心逻辑
 
 ### 登录流程
 
 1. 用户输入邮箱和密码
-2. 调用 `httpPost("/api/proxy/user/doLogin", { email, password })`
-3. 成功后将 Token 存入 `localStorage.authToken`
-4. 使用 `router.replace("/main")` 跳转主页
+2. 调用 `useAuth().login(email, password)`
+3. Hook 内部调用 `authService.login()`
+4. 成功后将 Token 存入 **Zustand store** (`auth-storage`)
+5. 使用 `router.replace("/main")` 跳转主页
+
+### 架构层次
+
+```
+LoginPage
+  └── useAuth Hook
+        ├── useAuthStore (状态管理)
+        └── authService.login() (API 调用)
+              └── httpPost() (HTTP 请求)
+```
 
 ### 路由保护
 
-根页面 `src/app/page.tsx` 会检测 Token：
+根页面 `src/app/page.tsx` 会检测 Token（从 Zustand store）：
 - 有 Token -> 跳转 `/main`
 - 无 Token -> 跳转 `/auth/login`
 
@@ -61,6 +75,12 @@ string // Token
 | `layout.tsx` | 登录模块布局 |
 
 ## 变更记录 (Changelog)
+
+### 2026-03-22 - 架构优化
+
+- 使用 `useAuth` Hook 替代直接操作 localStorage
+- 使用 Zustand store 管理认证状态
+- 集成服务层 (`authService`)
 
 ### 2026-03-21 - 更新
 

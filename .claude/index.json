@@ -1,5 +1,5 @@
 {
-  "timestamp": "2026-03-21T00:00:00.000Z",
+  "timestamp": "2026-03-22T00:00:00.000Z",
   "project": {
     "name": "agent-os-web",
     "version": "0.1.0",
@@ -23,8 +23,11 @@
       "path": "src/app/auth/login",
       "claudeMd": "src/app/auth/login/CLAUDE.md",
       "entry": "src/app/auth/login/page.tsx",
+      "hooks": ["useAuth"],
+      "services": ["authService"],
+      "stores": ["useAuthStore"],
       "api": [
-        "/api/proxy/user/doLogin"
+        "/api/proxy/auth/login"
       ],
       "routes": [
         "/auth/login"
@@ -55,13 +58,12 @@
         "ChatBubble.tsx",
         "ChatInput.tsx"
       ],
+      "services": ["chatService"],
+      "types": ["Conversation", "Message", "RawMessage"],
       "api": [
-        "/api/proxy/conversation/list",
-        "/api/proxy/conversation/create",
-        "/api/proxy/conversation/update",
-        "/api/proxy/conversation/delete",
-        "/api/proxy/message/list",
-        "/api/proxy/message/chat"
+        "/api/proxy/chat/conversations",
+        "/api/proxy/chat/conversations/{id}",
+        "/api/proxy/chat/conversations/{id}/messages"
       ],
       "routes": [
         "/main/chat"
@@ -77,6 +79,7 @@
         "AgentCard.tsx",
         "AgentDetailsSheet.tsx"
       ],
+      "types": ["Agent", "AgentDetails", "McpTool"],
       "api": [],
       "routes": [
         "/main/agent-hub"
@@ -96,6 +99,7 @@
         "TaskDetail.tsx",
         "ExecutionControl.tsx"
       ],
+      "types": ["ExecutionStep", "TaskRecord", "ExecutionControlMode"],
       "api": [],
       "routes": [
         "/main/task"
@@ -127,12 +131,12 @@
       "claudeMd": "src/app/main/components/layout/CLAUDE.md",
       "components": [
         "AppSidebar.tsx",
-        "AppTopBar.tsx",
-        "SidebarContext.tsx"
+        "AppTopBar.tsx"
       ],
+      "stores": ["useSidebarStore"],
       "hasTests": false,
       "localStorageKeys": [
-        "sidebar_collapsed"
+        "sidebar-storage"
       ]
     },
     {
@@ -167,6 +171,38 @@
       "hasTests": false
     },
     {
+      "name": "store",
+      "path": "src/store",
+      "claudeMd": "src/store/CLAUDE.md",
+      "stores": ["useAuthStore", "useSidebarStore"],
+      "files": ["auth.ts", "sidebar.ts", "index.ts"],
+      "hasTests": false
+    },
+    {
+      "name": "services",
+      "path": "src/services",
+      "claudeMd": "src/services/CLAUDE.md",
+      "services": ["authService", "chatService"],
+      "files": ["auth.service.ts", "chat.service.ts", "index.ts"],
+      "hasTests": false
+    },
+    {
+      "name": "types",
+      "path": "src/types",
+      "claudeMd": "src/types/CLAUDE.md",
+      "files": ["auth.ts", "conversation.ts", "task.ts", "agent.ts", "index.ts"],
+      "types": ["LoginRequest", "User", "Conversation", "Message", "RawMessage", "ExecutionStep", "TaskRecord", "Agent", "AgentDetails", "McpTool"],
+      "hasTests": false
+    },
+    {
+      "name": "hooks",
+      "path": "src/hooks",
+      "claudeMd": "src/hooks/CLAUDE.md",
+      "hooks": ["useAuth"],
+      "files": ["useAuth.ts", "index.ts"],
+      "hasTests": false
+    },
+    {
       "name": "lib",
       "path": "src/lib",
       "claudeMd": "src/lib/CLAUDE.md",
@@ -178,11 +214,11 @@
     }
   ],
   "coverage": {
-    "totalFiles": 47,
-    "scannedFiles": 47,
+    "totalFiles": 63,
+    "scannedFiles": 63,
     "percentage": 100,
-    "modulesDocumented": 11,
-    "modulesTotal": 11
+    "modulesDocumented": 14,
+    "modulesTotal": 14
   },
   "gaps": {
     "missingTests": true,
@@ -196,6 +232,10 @@
       "main/components/layout",
       "components/theme",
       "components/ui",
+      "store",
+      "services",
+      "types",
+      "hooks",
       "lib"
     ],
     "mockDataModules": [
@@ -227,23 +267,25 @@
     "实现 /main/knowledge-base 路由页面"
   ],
   "changesSinceLastScan": {
-    "date": "2026-03-21",
+    "date": "2026-03-22",
     "newModules": [
-      "main/task",
-      "main/components/layout",
-      "components/theme"
+      "store",
+      "services",
+      "types",
+      "hooks"
     ],
-    "movedModules": [
-      {
-        "from": "src/components/layout",
-        "to": "src/app/main/components/layout"
-      }
+    "architecturalChanges": [
+      "引入 Zustand 状态管理替代 localStorage 直接操作",
+      "新增服务层封装 API 调用",
+      "新增类型系统统一类型定义",
+      "新增 Hooks 层封装业务逻辑",
+      "HTTP 封装改为从 Zustand store 获取 Token",
+      "移除 SidebarContext，改用 Zustand store"
     ],
     "newFeatures": [
-      "Task 执行控制台",
-      "侧边栏折叠功能",
-      "深色/浅色主题切换",
-      "Blog 详情页基础实现"
+      "Zustand 持久化状态管理",
+      "类型安全的 API 服务层",
+      "统一的认证 Hook (useAuth)"
     ]
   }
 }
