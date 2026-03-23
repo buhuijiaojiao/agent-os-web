@@ -1,69 +1,113 @@
+"use client";
+
 import {
   Card,
   CardContent,
   CardDescription,
-  CardFooter,
   CardHeader,
   CardTitle,
 } from "@/components/ui/card";
-import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
-import { Settings, Brain, Zap, MemoryStick } from "lucide-react";
-import type { Agent } from "@/types/agent";
+import { Badge } from "@/components/ui/badge";
+import { Switch } from "@/components/ui/switch";
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuTrigger,
+} from "@/components/ui/dropdown-menu";
+import { Bot, MoreVertical, Pencil, Trash2, Cpu } from "lucide-react";
+import type { AgentListItem } from "@/types/agent";
 
 interface AgentCardProps {
-  agent: Agent;
-  onClick: () => void;
+  agent: AgentListItem;
+  onEdit: (agent: AgentListItem) => void;
+  onDelete: (agent: AgentListItem) => void;
+  onToggleEnabled: (agent: AgentListItem) => void;
 }
 
-export function AgentCard({ agent, onClick }: AgentCardProps) {
-  const getRoleColor = (role: string) => {
-    if (role.includes("Persona")) return "bg-sky-500 hover:bg-sky-600";
-    if (role.includes("Tool")) return "bg-emerald-500 hover:bg-emerald-600";
-    return "bg-gray-500 hover:bg-gray-600";
+export function AgentCard({ agent, onEdit, onDelete, onToggleEnabled }: AgentCardProps) {
+  const formatDate = (timestamp: number) => {
+    return new Date(timestamp).toLocaleDateString("zh-CN", {
+      month: "short",
+      day: "numeric",
+    });
   };
 
   return (
-    <Card
-      className="hover:shadow-lg transition-shadow cursor-pointer"
-      onClick={onClick}
-    >
-      <CardHeader>
-        <div className="flex justify-between items-start">
-          <CardTitle className="text-xl">{agent.name}</CardTitle>
-          <Badge className={getRoleColor(agent.role)}>{agent.role}</Badge>
+    <Card className={`group hover:shadow-lg transition-all duration-200 hover:border-primary/50 ${!agent.enabled ? 'opacity-60' : ''}`}>
+      <CardHeader className="pb-3">
+        <div className="flex items-start justify-between gap-2">
+          <div className="flex items-center gap-3 min-w-0">
+            <div className="flex-shrink-0 w-10 h-10 rounded-lg bg-primary/10 flex items-center justify-center">
+              <Bot className="h-5 w-5 text-primary" />
+            </div>
+            <div className="min-w-0">
+              <div className="flex items-center gap-2">
+                <CardTitle className="text-lg truncate">{agent.name}</CardTitle>
+                {!agent.enabled && (
+                  <Badge variant="secondary" className="text-xs">
+                    已禁用
+                  </Badge>
+                )}
+              </div>
+              <CardDescription className="line-clamp-1 text-xs mt-0.5">
+                {agent.description || "暂无描述"}
+              </CardDescription>
+            </div>
+          </div>
+          <DropdownMenu>
+            <DropdownMenuTrigger asChild>
+              <Button
+                variant="ghost"
+                size="icon-sm"
+                className="opacity-0 group-hover:opacity-100 transition-opacity"
+              >
+                <MoreVertical className="h-4 w-4" />
+              </Button>
+            </DropdownMenuTrigger>
+            <DropdownMenuContent align="end">
+              <DropdownMenuItem onClick={() => onEdit(agent)}>
+                <Pencil className="h-4 w-4 mr-2" />
+                编辑
+              </DropdownMenuItem>
+              <DropdownMenuItem
+                onClick={() => onDelete(agent)}
+                className="text-destructive focus:text-destructive"
+              >
+                <Trash2 className="h-4 w-4 mr-2" />
+                删除
+              </DropdownMenuItem>
+            </DropdownMenuContent>
+          </DropdownMenu>
         </div>
-        <CardDescription className="line-clamp-2 min-h-[40px]">
-          {agent.description}
-        </CardDescription>
       </CardHeader>
-      <CardContent className="space-y-2 text-sm text-muted-foreground">
-        <div className="flex items-center">
-          <Brain className="mr-2 h-4 w-4 text-primary" />
-          <span>**Prompt ID:** {agent.id}</span>
+
+      <CardContent className="space-y-3">
+        {/* 模型 */}
+        <div className="flex items-center gap-2 flex-wrap">
+          <Badge variant="secondary" className="font-normal">
+            <Cpu className="h-3 w-3 mr-1" />
+            {agent.model}
+          </Badge>
         </div>
-        <div className="flex items-center">
-          <Zap className="mr-2 h-4 w-4 text-yellow-500" />
-          <span>**工具数量:** {agent.tools} 个</span>
-        </div>
-        <div className="flex items-center">
-          <MemoryStick className="mr-2 h-4 w-4 text-purple-500" />
-          <span>**记忆 ID:** {agent.memoryId ?? "无独立记忆"}</span>
+
+        {/* 启用开关和更新时间 */}
+        <div className="flex items-center justify-between pt-2 border-t">
+          <div className="flex items-center gap-2">
+            <Switch
+              checked={agent.enabled}
+              onCheckedChange={() => onToggleEnabled(agent)}
+            />
+            <span className="text-xs text-muted-foreground">
+              {agent.enabled ? "已启用" : "已禁用"}
+            </span>
+          </div>
+          <div className="text-xs text-muted-foreground">
+            更新于 {formatDate(agent.updatedAt)}
+          </div>
         </div>
       </CardContent>
-      <CardFooter className="flex justify-end">
-        <Button
-          variant="outline"
-          size="sm"
-          onClick={(e) => {
-            e.stopPropagation();
-            onClick();
-          }}
-        >
-          <Settings className="mr-2 h-4 w-4" />
-          配置
-        </Button>
-      </CardFooter>
     </Card>
   );
 }

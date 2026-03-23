@@ -1,22 +1,65 @@
-export interface Agent {
+// ============================================
+// Agent 类型定义
+// ============================================
+
+/**
+ * Agent 列表项（摘要）
+ * GET /agents 返回
+ */
+export interface AgentListItem {
   id: string;
   name: string;
-  role: string;          // "Persona" | "MCP/Tool"
   description: string;
-  tools: number;         // 工具数量
-  memoryId: string | null;  // 记忆 ID
+  model: string;
+  enabled: boolean;
+  updatedAt: number;
 }
 
+/**
+ * Agent 详情
+ * GET /agents/:id 返回
+ */
 export interface AgentDetails {
   id: string;
   name: string;
-  role: string;
-  systemPrompt: string;  // AI 人格定义
-  memoryId: string | null;
-  toolIds: string[];     // 绑定的 MCP 工具 ID
+  description: string;
+  model: string;
+  temperature: number;
+  prompt: string;
+  toolIds: string[];
+  enabled: boolean;
+  createdAt: number;
+  updatedAt: number;
 }
 
-export interface McpTool {
+/**
+ * Agent 创建/编辑请求
+ */
+export interface AgentRequest {
+  name: string;
+  description: string;
+  model: string;
+  temperature: number;
+  prompt: string;
+  toolIds: string[];
+}
+
+/**
+ * Tool 定义
+ */
+export interface Tool {
   id: string;
   name: string;
+  description: string;
+  category?: string;
 }
+
+/**
+ * 可用模型
+ */
+export interface Model {
+  id: string;
+  name: string;
+  provider: string;
+}
+
