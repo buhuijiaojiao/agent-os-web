@@ -8,13 +8,12 @@ import {
   SheetTitle,
 } from "@/components/ui/sheet";
 import { AgentFormContent } from "./AgentFormContent";
-import type { AgentDetails, AgentRequest, Tool, Model } from "@/types/agent";
+import type { AgentDetail, AgentRequest, Model } from "@/types/agent";
 
 interface AgentFormSheetProps {
   open: boolean;
   onOpenChange: (open: boolean) => void;
-  agent?: AgentDetails | null;
-  tools: Tool[];
+  agent?: AgentDetail | null;
   models: Model[];
   onSubmit: (data: AgentRequest) => Promise<void>;
   isSubmitting: boolean;
@@ -24,7 +23,6 @@ export function AgentFormSheet({
   open,
   onOpenChange,
   agent,
-  tools,
   models,
   onSubmit,
   isSubmitting,
@@ -46,7 +44,6 @@ export function AgentFormSheet({
         <AgentFormContent
           key={formKey}
           agent={agent}
-          tools={tools}
           models={models}
           onSubmit={onSubmit}
           isSubmitting={isSubmitting}

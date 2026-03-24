@@ -1,5 +1,5 @@
 import { httpGet, httpPost, httpPut, httpDelete } from '@/lib/http';
-import type { AgentListItem, AgentDetails, AgentRequest, Tool, Model } from '@/types/agent';
+import type { AgentListItem, AgentDetail, AgentRequest, Model } from '@/types/agent';
 
 export const agentService = {
   /**
@@ -8,9 +8,9 @@ export const agentService = {
   getList: () => httpGet<AgentListItem[]>('/api/proxy/agents'),
 
   /**
-   * 获取 Agent 详情
+   * 获取 Agent 详情（含绑定的工具信息）
    */
-  getById: (id: string) => httpGet<AgentDetails>(`/api/proxy/agents/${id}`),
+  getById: (id: string) => httpGet<AgentDetail>(`/api/proxy/agents/${id}`),
 
   /**
    * 创建 Agent
@@ -33,11 +33,6 @@ export const agentService = {
    */
   toggleEnabled: (id: string, enabled: boolean) =>
     httpPut<void>(`/api/proxy/agents/${id}/enabled`, { enabled }),
-
-  /**
-   * 获取可用工具列表
-   */
-  getTools: () => httpGet<Tool[]>('/api/proxy/tools'),
 
   /**
    * 获取可用模型列表

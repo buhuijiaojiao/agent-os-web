@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
@@ -16,11 +16,10 @@ import {
 } from "@/components/ui/select";
 import { Separator } from "@/components/ui/separator";
 import { Loader2, Sparkles, Settings2, Wrench } from "lucide-react";
-import type { AgentDetails, AgentRequest, Tool, Model } from "@/types/agent";
+import type { AgentDetail, AgentRequest, AgentToolBinding, Model } from "@/types/agent";
 
 interface AgentFormContentProps {
-  agent?: AgentDetails | null;
-  tools: Tool[];
+  agent?: AgentDetail | null;
   models: Model[];
   onSubmit: (data: AgentRequest) => Promise<void>;
   isSubmitting: boolean;
@@ -30,38 +29,42 @@ interface AgentFormContentProps {
 const defaultFormData: AgentRequest = {
   name: "",
   description: "",
-  model: "",
+  modelId: "",
   temperature: 0.7,
   prompt: "",
-  toolIds: [],
+  tools: [],
 };
 
 export function AgentFormContent({
   agent,
-  tools,
   models,
   onSubmit,
   isSubmitting,
   onOpenChange,
 }: AgentFormContentProps) {
-  const defaultModel = models[0]?.id || "";
-
   const [formData, setFormData] = useState<AgentRequest>(() => {
     if (agent) {
       return {
         name: agent.name,
         description: agent.description,
-        model: agent.model,
+        modelId: agent.model.id,
         temperature: agent.temperature,
         prompt: agent.prompt,
-        toolIds: agent.toolIds,
+        tools: agent.tools.map(t => ({ toolId: t.id, enabled: t.enabled })),
       };
     }
-    return {
-      ...defaultFormData,
-      model: defaultModel,
-    };
+    return { ...defaultFormData };
   });
+
+  // 当 models 加载完成后，设置默认模型
+  useEffect(() => {
+    if (!agent && models.length > 0 && !formData.modelId) {
+      setFormData(prev => ({ ...prev, modelId: models[0].id }));
+    }
+  }, [agent, models, formData.modelId]);
+
+  // 从 agent 获取工具列表（仅编辑模式有值）
+  const tools = agent?.tools ?? [];
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -69,13 +72,28 @@ export function AgentFormContent({
   };
 
   const handleToolToggle = (toolId: string, checked: boolean) => {
-    setFormData((prev) => ({
-      ...prev,
-      toolIds: checked
-        ? [...prev.toolIds, toolId]
-        : prev.toolIds.filter((id) => id !== toolId),
-    }));
+    setFormData((prev) => {
+      const existingIndex = prev.tools.findIndex(t => t.toolId === toolId);
+      if (existingIndex >= 0) {
+        // 更新现有工具的启用状态
+        const newTools = [...prev.tools];
+        newTools[existingIndex] = { toolId, enabled: checked };
+        return { ...prev, tools: newTools };
+      } else {
+        // 添加新工具
+        return { ...prev, tools: [...prev.tools, { toolId, enabled: checked }] };
+      }
+    });
   };
+
+  // 检查工具是否启用
+  const isToolEnabled = (toolId: string) => {
+    const tool = formData.tools.find(t => t.toolId === toolId);
+    return tool?.enabled ?? false;
+  };
+
+  // 统计已启用的工具数量
+  const enabledToolsCount = formData.tools.filter(t => t.enabled).length;
 
   return (
     <form onSubmit={handleSubmit} className="flex flex-col flex-1 min-h-0">
@@ -130,13 +148,13 @@ export function AgentFormContent({
 
             <div className="grid gap-4">
               <div className="grid gap-2">
-                <Label htmlFor="model">
+                <Label htmlFor="modelId">
                   模型 <span className="text-destructive">*</span>
                 </Label>
                 <Select
-                  value={formData.model}
+                  value={formData.modelId}
                   onValueChange={(value) =>
-                    setFormData({ ...formData, model: value })
+                    setFormData((prev) => ({ ...prev, modelId: value }))
                   }
                 >
                   <SelectTrigger>
@@ -216,16 +234,16 @@ export function AgentFormContent({
                 <Wrench className="h-4 w-4" />
                 工具绑定
               </div>
-              {formData.toolIds.length > 0 && (
+              {enabledToolsCount > 0 && (
                 <span className="text-xs bg-primary/10 text-primary px-2 py-0.5 rounded-full">
-                  已选择 {formData.toolIds.length} 个
+                  已启用 {enabledToolsCount} 个
                 </span>
               )}
             </div>
 
             {tools.length === 0 ? (
               <div className="text-sm text-muted-foreground text-center py-6 border rounded-lg border-dashed">
-                暂无可用工具
+                {agent ? "该 Agent 暂未绑定工具" : "新建 Agent 时暂无可选工具"}
               </div>
             ) : (
               <div className="grid gap-2">
@@ -233,27 +251,21 @@ export function AgentFormContent({
                   <label
                     key={tool.id}
                     htmlFor={tool.id}
-                    className={`flex items-start gap-3 p-3 rounded-lg border cursor-pointer transition-colors ${
-                      formData.toolIds.includes(tool.id)
+                    className={`flex items-center gap-3 p-3 rounded-lg border cursor-pointer transition-colors ${
+                      isToolEnabled(tool.id)
                         ? "bg-primary/5 border-primary/30"
                         : "hover:bg-muted/50"
                     }`}
                   >
                     <Checkbox
                       id={tool.id}
-                      checked={formData.toolIds.includes(tool.id)}
+                      checked={isToolEnabled(tool.id)}
                       onCheckedChange={(checked) =>
                         handleToolToggle(tool.id, checked as boolean)
                       }
-                      className="mt-0.5"
                     />
                     <div className="flex-1 min-w-0">
                       <div className="font-medium text-sm">{tool.name}</div>
-                      {tool.description && (
-                        <p className="text-xs text-muted-foreground mt-0.5">
-                          {tool.description}
-                        </p>
-                      )}
                     </div>
                   </label>
                 ))}
@@ -273,7 +285,10 @@ export function AgentFormContent({
         >
           取消
         </Button>
-        <Button type="submit" disabled={isSubmitting || !formData.name || !formData.model}>
+        <Button
+          type="submit"
+          disabled={isSubmitting || !formData.name || !formData.modelId}
+        >
           {isSubmitting && <Loader2 className="mr-2 h-4 w-4 animate-spin" />}
           {agent ? "保存更改" : "创建 Agent"}
         </Button>

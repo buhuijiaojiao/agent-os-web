@@ -88,7 +88,7 @@ export function AgentCard({ agent, onEdit, onDelete, onToggleEnabled }: AgentCar
         <div className="flex items-center gap-2 flex-wrap">
           <Badge variant="secondary" className="font-normal">
             <Cpu className="h-3 w-3 mr-1" />
-            {agent.model}
+            {agent.modelName}
           </Badge>
         </div>
 
