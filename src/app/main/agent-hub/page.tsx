@@ -114,8 +114,7 @@ export default function AgentHubPage() {
 
   const toggleAgentEnabled = useCallback(async (agent: AgentListItem) => {
     try {
-      // 后端 API 就绪后使用：
-      // await agentService.toggleEnabled(agent.id, !agent.enabled);
+      await agentService.toggleEnabled(agent.id, !agent.enabled);
       console.log("切换状态:", agent.id, !agent.enabled);
       await refreshAgents();
     } catch (error) {
