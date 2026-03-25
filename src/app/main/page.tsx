@@ -1,96 +1,119 @@
-export default function Home() {
+"use client";
+
+import { MessageSquare, Bot, Terminal, LibraryBig } from "lucide-react";
+import { StatCard } from "./components/home/StatCard";
+import { RecentActivity } from "./components/home/RecentActivity";
+import type { StatItem, ActivityItem } from "./components/home/types";
+
+// Mock 数据
+const mockStats: StatItem[] = [
+  { icon: MessageSquare, label: "对话", value: 128, trend: "+12" },
+  { icon: Bot, label: "Agent", value: 8, trend: "+2" },
+  { icon: Terminal, label: "任务", value: 45, trend: "+5" },
+  // { icon: LibraryBig, label: "知识库", value: 12, trend: "+1" },
+];
+
+const mockActivities: ActivityItem[] = [
+  {
+    id: "1",
+    type: "chat",
+    title: "产品需求讨论",
+    description: "关于新功能的技术方案",
+    time: "10分钟前",
+    href: "/main/chat",
+  },
+  {
+    id: "2",
+    type: "task",
+    title: "生成周报",
+    description: "自动汇总本周工作内容",
+    time: "1小时前",
+    href: "/main/task",
+  },
+  {
+    id: "3",
+    type: "agent",
+    title: "数据分析助手",
+    description: "已启用 · 3个工具绑定",
+    time: "3小时前",
+    href: "/main/agent-hub",
+  },
+  {
+    id: "4",
+    type: "chat",
+    title: "代码审查建议",
+    description: "PR #42 的审查反馈",
+    time: "昨天",
+    href: "/main/chat",
+  },
+  {
+    id: "5",
+    type: "task",
+    title: "API 文档生成",
+    description: "基于代码注释自动生成",
+    time: "昨天",
+    href: "/main/task",
+  },
+];
+
+// 获取当前日期
+function getGreeting(): string {
+  const hour = new Date().getHours();
+  if (hour < 6) return "夜深了";
+  if (hour < 12) return "早上好";
+  if (hour < 14) return "中午好";
+  if (hour < 18) return "下午好";
+  return "晚上好";
+}
+
+function formatDate(): string {
+  const now = new Date();
+  const options: Intl.DateTimeFormatOptions = {
+    year: "numeric",
+    month: "long",
+    day: "numeric",
+    weekday: "long",
+  };
+  return now.toLocaleDateString("zh-CN", options);
+}
+
+export default function HomePage() {
   return (
-    <div className="relative space-y-14">
-      {/* subtle background grid */}
+    <div className="relative space-y-8">
+      {/* 背景网格 */}
       <div
-        className="pointer-events-none absolute inset-0 opacity-[0.04] 
+        className="pointer-events-none absolute inset-0 opacity-[0.04]
                       [background-image:linear-gradient(to_right,#fff_1px,transparent_1px),linear-gradient(to_bottom,#fff_1px,transparent_1px)]
                       [background-size:40px_40px]"
       />
 
-      {/* Title Section */}
-      <section className="space-y-3 max-w-2xl">
-        <h1 className="text-5xl font-semibold tracking-tight leading-[1.1]">
-          Agent OS
+      {/* 欢迎区域 */}
+      <section className="space-y-2">
+        <h1 className="text-3xl font-bold tracking-tight text-foreground">
+          {getGreeting()}，欢迎回来
         </h1>
-
-        <p className="text-base text-muted-foreground leading-relaxed">
-          Your personal AI operating system — an intelligent workspace that
-          evolves with your thinking.
-        </p>
+        <p className="text-muted-foreground">{formatDate()}</p>
       </section>
 
-      {/* Feature Cards */}
-      <section className="grid grid-cols-1 md:grid-cols-3 gap-8">
-        <FeatureCard
-          href="/main/chat"
-          title="Chat"
-          desc="Talk with your digital self. Memory-aware, reasoning-driven intelligence."
-        />
+      {/* 统计卡片 */}
+      <section>
+        <h2 className="text-sm font-medium text-muted-foreground mb-4">
+          概览
+        </h2>
+        <div className="grid grid-cols-2 lg:grid-cols-4 gap-4">
+          {mockStats.map((stat) => (
+            <StatCard key={stat.label} stat={stat} />
+          ))}
+        </div>
+      </section>
 
-        <FeatureCard
-          href="/main/agent-hub"
-          title="Agent Hub"
-          desc="Design, orchestrate and deploy intelligent agents."
-        />
-
-        <FeatureCard
-          href="/main/blog"
-          title="Blog"
-          desc="Write and refine ideas with AI-assisted thinking."
-        />
+      {/* 最近活动 */}
+      <section>
+        <h2 className="text-sm font-medium text-muted-foreground mb-4">
+          最近活动
+        </h2>
+        <RecentActivity activities={mockActivities} />
       </section>
     </div>
-  );
-}
-function FeatureCard({
-  href,
-  title,
-  desc,
-}: {
-  href: string;
-  title: string;
-  desc: string;
-}) {
-  return (
-    <a
-      href={href}
-      className="
-        group relative p-6 rounded-2xl
-        bg-[#111217]
-        border border-white/10
-        overflow-hidden
-        transition-all duration-300
-
-        hover:-translate-y-1
-        hover:border-[#4ef2c2]/40
-      "
-    >
-      {/* glow layer */}
-      <div
-        className="
-          absolute inset-0 opacity-0 group-hover:opacity-100
-          transition duration-500
-          bg-[radial-gradient(circle_at_50%_0%,rgba(78,242,194,0.15),transparent_60%)]
-        "
-      />
-
-      {/* content */}
-      <div className="relative z-10">
-        <h2 className="text-lg font-semibold mb-2 tracking-tight">{title}</h2>
-
-        <p className="text-sm text-muted-foreground leading-relaxed">{desc}</p>
-      </div>
-
-      {/* bottom accent line */}
-      <div
-        className="
-          absolute bottom-0 left-0 h-[2px] w-0
-          bg-[#4ef2c2]
-          transition-all duration-500
-          group-hover:w-full
-        "
-      />
-    </a>
   );
 }

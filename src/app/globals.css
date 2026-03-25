@@ -120,3 +120,13 @@
     @apply bg-background text-foreground;
   }
 }
+
+/* 公共组件样式 */
+@layer components {
+  /* 卡片 hover glow 效果 */
+  .card-glow {
+    @apply absolute inset-0 rounded-xl opacity-0 group-hover:opacity-100
+           transition-opacity duration-500 -z-10
+           bg-[radial-gradient(circle_at_50%_0%,rgba(78,242,194,0.08),transparent_60%)];
+  }
+}
