@@ -1,5 +1,5 @@
 {
-  "timestamp": "2026-03-22T00:00:00.000Z",
+  "timestamp": "2026-03-25T16:50:39.000Z",
   "project": {
     "name": "agent-os-web",
     "version": "0.1.0",
@@ -18,6 +18,21 @@
     ]
   },
   "modules": [
+    {
+      "name": "main/home",
+      "path": "src/app/main",
+      "claudeMd": null,
+      "entry": "src/app/main/page.tsx",
+      "components": [
+        "StatCard",
+        "RecentActivity"
+      ],
+      "routes": [
+        "/main"
+      ],
+      "hasTests": false,
+      "mockData": true
+    },
     {
       "name": "auth/login",
       "path": "src/app/auth/login",
@@ -51,12 +66,12 @@
       "claudeMd": "src/app/main/chat/CLAUDE.md",
       "entry": "src/app/main/chat/layout.tsx",
       "components": [
-        "ChatConversationList.tsx",
-        "ChatConversationItem.tsx",
-        "ChatConversationPanel.tsx",
-        "ChatMessages.tsx",
-        "ChatBubble.tsx",
-        "ChatInput.tsx"
+        "ChatConversationList",
+        "ChatConversationItem",
+        "ChatConversationPanel",
+        "ChatMessages",
+        "ChatBubble",
+        "ChatInput"
       ],
       "services": ["chatService"],
       "types": ["Conversation", "Message", "RawMessage"],
@@ -76,11 +91,19 @@
       "claudeMd": "src/app/main/agent-hub/CLAUDE.md",
       "entry": "src/app/main/agent-hub/page.tsx",
       "components": [
-        "AgentCard.tsx",
-        "AgentDetailsSheet.tsx"
+        "AgentCard",
+        "AgentFormSheet",
+        "AgentFormContent",
+        "DeleteConfirmDialog"
       ],
-      "types": ["Agent", "AgentDetails", "McpTool"],
-      "api": [],
+      "services": ["agentService"],
+      "types": ["AgentListItem", "AgentDetail", "AgentRequest", "Model", "AgentTool"],
+      "api": [
+        "/api/proxy/agents",
+        "/api/proxy/agents/{id}",
+        "/api/proxy/agents/{id}/enabled",
+        "/api/proxy/models"
+      ],
       "routes": [
         "/main/agent-hub"
       ],
@@ -93,11 +116,11 @@
       "claudeMd": "src/app/main/task/CLAUDE.md",
       "entry": "src/app/main/task/page.tsx",
       "components": [
-        "ExecutionTimeline.tsx",
-        "TaskResult.tsx",
-        "TaskHistory.tsx",
-        "TaskDetail.tsx",
-        "ExecutionControl.tsx"
+        "ExecutionTimeline",
+        "TaskResult",
+        "TaskHistory",
+        "TaskDetail",
+        "ExecutionControl"
       ],
       "types": ["ExecutionStep", "TaskRecord", "ExecutionControlMode"],
       "api": [],
@@ -130,8 +153,8 @@
       "path": "src/app/main/components/layout",
       "claudeMd": "src/app/main/components/layout/CLAUDE.md",
       "components": [
-        "AppSidebar.tsx",
-        "AppTopBar.tsx"
+        "AppSidebar",
+        "AppTopBar"
       ],
       "stores": ["useSidebarStore"],
       "hasTests": false,
@@ -140,11 +163,22 @@
       ]
     },
     {
+      "name": "main/components/home",
+      "path": "src/app/main/components/home",
+      "claudeMd": "src/app/main/components/home/CLAUDE.md",
+      "components": [
+        "StatCard",
+        "RecentActivity"
+      ],
+      "types": ["StatItem", "ActivityItem", "ActivityType"],
+      "hasTests": false
+    },
+    {
       "name": "components/theme",
       "path": "src/components",
       "components": [
-        "theme-provider.tsx",
-        "theme-toggle.tsx"
+        "theme-provider",
+        "theme-toggle"
       ],
       "hasTests": false
     },
@@ -153,20 +187,24 @@
       "path": "src/components/ui",
       "claudeMd": "src/components/ui/CLAUDE.md",
       "components": [
-        "button.tsx",
-        "input.tsx",
-        "textarea.tsx",
-        "label.tsx",
-        "card.tsx",
-        "badge.tsx",
-        "avatar.tsx",
-        "dialog.tsx",
-        "sheet.tsx",
-        "tabs.tsx",
-        "scroll-area.tsx",
-        "separator.tsx",
-        "tooltip.tsx",
-        "dropdown-menu.tsx"
+        "button",
+        "input",
+        "textarea",
+        "label",
+        "card",
+        "badge",
+        "avatar",
+        "dialog",
+        "sheet",
+        "tabs",
+        "scroll-area",
+        "separator",
+        "tooltip",
+        "dropdown-menu",
+        "slider",
+        "checkbox",
+        "select",
+        "switch"
       ],
       "hasTests": false
     },
@@ -182,8 +220,8 @@
       "name": "services",
       "path": "src/services",
       "claudeMd": "src/services/CLAUDE.md",
-      "services": ["authService", "chatService"],
-      "files": ["auth.service.ts", "chat.service.ts", "index.ts"],
+      "services": ["authService", "chatService", "agentService"],
+      "files": ["auth.service.ts", "chat.service.ts", "agent.service.ts", "index.ts"],
       "hasTests": false
     },
     {
@@ -191,7 +229,12 @@
       "path": "src/types",
       "claudeMd": "src/types/CLAUDE.md",
       "files": ["auth.ts", "conversation.ts", "task.ts", "agent.ts", "index.ts"],
-      "types": ["LoginRequest", "User", "Conversation", "Message", "RawMessage", "ExecutionStep", "TaskRecord", "Agent", "AgentDetails", "McpTool"],
+      "types": [
+        "LoginRequest", "User",
+        "Conversation", "Message", "RawMessage",
+        "ExecutionStep", "TaskRecord", "ExecutionControlMode",
+        "AgentListItem", "AgentDetail", "AgentRequest", "Model", "AgentTool"
+      ],
       "hasTests": false
     },
     {
@@ -214,22 +257,24 @@
     }
   ],
   "coverage": {
-    "totalFiles": 63,
-    "scannedFiles": 63,
+    "totalFiles": 75,
+    "scannedFiles": 75,
     "percentage": 100,
-    "modulesDocumented": 14,
-    "modulesTotal": 14
+    "modulesDocumented": 15,
+    "modulesTotal": 16
   },
   "gaps": {
     "missingTests": true,
     "missingTestsModules": [
       "auth/login",
       "api/proxy",
+      "main/home",
       "main/chat",
       "main/agent-hub",
       "main/task",
       "main/blog",
       "main/components/layout",
+      "main/components/home",
       "components/theme",
       "components/ui",
       "store",
@@ -239,6 +284,7 @@
       "lib"
     ],
     "mockDataModules": [
+      "main/home",
       "main/agent-hub",
       "main/task",
       "main/blog"
@@ -246,7 +292,8 @@
     "unimplementedRoutes": [
       "/main/log",
       "/main/knowledge-base"
-    ]
+    ],
+    "servicesIndexMissing": ["agentService"]
   },
   "ignoreStats": {
     "ignoredDirs": [
@@ -259,33 +306,45 @@
   },
   "truncated": false,
   "nextSteps": [
+    "在 src/services/index.ts 中导出 agentService",
     "为所有模块添加单元测试",
-    "实现 Agent Hub 的后端 API 对接",
-    "实现 Task 模块的后端 API 对接",
-    "实现 Blog 模块的后端 API 对接",
     "实现 /main/log 路由页面",
-    "实现 /main/knowledge-base 路由页面"
+    "实现 /main/knowledge-base 路由页面",
+    "首页统计数据对接后端 API",
+    "首页最近活动对接后端 API"
   ],
   "changesSinceLastScan": {
-    "date": "2026-03-22",
+    "date": "2026-03-25",
     "newModules": [
-      "store",
-      "services",
-      "types",
-      "hooks"
+      "main/components/home"
+    ],
+    "newFiles": [
+      "src/app/main/page.tsx",
+      "src/app/main/components/home/StatCard.tsx",
+      "src/app/main/components/home/RecentActivity.tsx",
+      "src/app/main/components/home/types.ts",
+      "src/services/agent.service.ts",
+      "src/app/main/agent-hub/components/AgentFormSheet.tsx",
+      "src/app/main/agent-hub/components/AgentFormContent.tsx",
+      "src/app/main/agent-hub/components/AgentCard.tsx",
+      "src/app/main/agent-hub/components/DeleteConfirmDialog.tsx",
+      "src/app/main/agent-hub/mocks.ts",
+      "src/components/ui/slider.tsx",
+      "src/components/ui/checkbox.tsx",
+      "src/components/ui/select.tsx",
+      "src/components/ui/switch.tsx"
     ],
     "architecturalChanges": [
-      "引入 Zustand 状态管理替代 localStorage 直接操作",
-      "新增服务层封装 API 调用",
-      "新增类型系统统一类型定义",
-      "新增 Hooks 层封装业务逻辑",
-      "HTTP 封装改为从 Zustand store 获取 Token",
-      "移除 SidebarContext，改用 Zustand store"
+      "Agent Hub 模块完全重构，对接后端 API",
+      "Agent 类型定义重构，分离列表项和详情类型",
+      "首页新增欢迎面板组件"
     ],
     "newFeatures": [
-      "Zustand 持久化状态管理",
-      "类型安全的 API 服务层",
-      "统一的认证 Hook (useAuth)"
+      "首页欢迎面板（统计卡片、最近活动）",
+      "Agent Hub 完整 CRUD 功能",
+      "Agent 模型选择和 Temperature 配置",
+      "Agent 启用/禁用切换",
+      "Agent 删除确认对话框"
     ]
   }
 }

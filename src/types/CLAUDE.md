@@ -110,29 +110,67 @@ interface ExecutionStepRecord {
 ### 智能体类型 (agent.ts)
 
 ```typescript
-import type { Agent, AgentDetails, McpTool } from "@/types/agent";
+import type {
+  Model,
+  AgentListItem,
+  AgentDetail,
+  AgentTool,
+  AgentToolBinding,
+  AgentRequest
+} from "@/types/agent";
 
-interface Agent {
+// 可用模型
+interface Model {
   id: string;
   name: string;
-  role: string;          // "Persona" | "MCP/Tool"
+  provider: string;
+}
+
+// Agent 列表项（摘要）
+interface AgentListItem {
+  id: string;
+  name: string;
   description: string;
-  tools: number;         // 工具数量
-  memoryId: string | null;
+  modelName: string;
+  enabled: boolean;
+  updatedAt: number;
 }
 
-interface AgentDetails {
+// Agent 工具信息
+interface AgentTool {
   id: string;
   name: string;
-  role: string;
-  systemPrompt: string;  // AI 人格定义
-  memoryId: string | null;
-  toolIds: string[];     // 绑定的 MCP 工具 ID
+  enabled: boolean;
 }
 
-interface McpTool {
+// Agent 详情
+interface AgentDetail {
   id: string;
   name: string;
+  description: string;
+  model: Model;
+  temperature: number;
+  prompt: string;
+  tools: AgentTool[];
+  enabled: boolean;
+  createdAt: number;
+  updatedAt: number;
+}
+
+// 工具绑定请求参数
+interface AgentToolBinding {
+  toolId: string;
+  enabled: boolean;
+}
+
+// 创建/编辑请求
+interface AgentRequest {
+  name: string;
+  description: string;
+  modelId: string;
+  temperature: number;
+  prompt: string;
+  tools: AgentToolBinding[];
 }
 ```
 
@@ -147,14 +185,14 @@ interface McpTool {
 | `auth.ts` | 认证相关 | `LoginRequest`, `User` |
 | `conversation.ts` | 对话相关 | `Conversation`, `Message`, `RawMessage` |
 | `task.ts` | 任务相关 | `ExecutionStep`, `TaskRecord`, `ExecutionControlMode` |
-| `agent.ts` | 智能体相关 | `Agent`, `AgentDetails`, `McpTool` |
+| `agent.ts` | 智能体相关 | `AgentListItem`, `AgentDetail`, `AgentTool`, `Model`, `AgentRequest` |
 
 ## 使用示例
 
 ```typescript
 import type { Conversation, Message } from "@/types/conversation";
 import type { ExecutionStep, ExecutionControlMode } from "@/types/task";
-import type { Agent, AgentDetails } from "@/types/agent";
+import type { AgentListItem, AgentDetail, AgentRequest } from "@/types/agent";
 
 // 在函数签名中使用
 function processMessage(message: Message): string {
@@ -165,6 +203,11 @@ function processMessage(message: Message): string {
 interface TaskProps {
   steps: ExecutionStep[];
   mode: ExecutionControlMode;
+}
+
+// 在 API 请求中使用
+async function createAgent(data: AgentRequest) {
+  return agentService.create(data);
 }
 ```
 
@@ -200,6 +243,17 @@ export * from './xxx';
 ```
 
 ## 变更记录 (Changelog)
+
+### 2026-03-25 - Agent 类型重构
+
+- 重构 Agent 类型定义
+- 新增 `Model` 接口
+- 新增 `AgentListItem` 列表项类型
+- 新增 `AgentDetail` 详情类型（替代原 `AgentDetails`）
+- 新增 `AgentTool` 工具信息类型
+- 新增 `AgentToolBinding` 工具绑定请求类型
+- 新增 `AgentRequest` 创建/编辑请求类型
+- 移除旧的 `Agent`, `McpTool` 类型
 
 ### 2026-03-22 - 初始化
 

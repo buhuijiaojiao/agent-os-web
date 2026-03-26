@@ -33,7 +33,10 @@ src/
     api/proxy/[...path]/  # 后端 API 代理
     auth/login/           # 登录模块
     main/                 # 主应用区域
-      components/layout/  # 布局组件 (Sidebar, TopBar)
+      page.tsx            # 首页欢迎面板
+      components/
+        layout/           # 布局组件 (Sidebar, TopBar)
+        home/             # 首页组件 (StatCard, RecentActivity)
       agent-hub/          # 智能体中心
       blog/               # 博客模块
       chat/               # 对话模块
@@ -47,6 +50,7 @@ src/
   services/               # API 服务层
     auth.service.ts       # 认证服务
     chat.service.ts       # 聊天服务
+    agent.service.ts      # 智能体服务
   store/                  # Zustand 状态管理
     auth.ts               # 认证状态
     sidebar.ts            # 侧边栏状态
@@ -73,15 +77,16 @@ graph TD
     D --> H["blog"]
     D --> I["task"]
     D --> J["components/layout"]
-    A --> K["src/components"]
-    K --> L["ui"]
-    K --> M["theme-provider"]
-    K --> N["theme-toggle"]
-    A --> O["src/lib"]
-    A --> P["src/store"]
-    A --> Q["src/services"]
-    A --> R["src/types"]
-    A --> S["src/hooks"]
+    D --> K["components/home"]
+    A --> L["src/components"]
+    L --> M["ui"]
+    L --> N["theme-provider"]
+    L --> O["theme-toggle"]
+    A --> P["src/lib"]
+    A --> Q["src/store"]
+    A --> R["src/services"]
+    A --> S["src/types"]
+    A --> T["src/hooks"]
 
     click C "./src/app/auth/login/CLAUDE.md" "查看登录模块文档"
     click F "./src/app/main/chat/CLAUDE.md" "查看聊天模块文档"
@@ -90,25 +95,28 @@ graph TD
     click I "./src/app/main/task/CLAUDE.md" "查看任务控制台文档"
     click E "./src/app/api/proxy/CLAUDE.md" "查看 API 代理文档"
     click J "./src/app/main/components/layout/CLAUDE.md" "查看布局组件文档"
-    click P "./src/store/CLAUDE.md" "查看状态管理文档"
-    click Q "./src/services/CLAUDE.md" "查看服务层文档"
-    click R "./src/types/CLAUDE.md" "查看类型定义文档"
+    click K "./src/app/main/components/home/CLAUDE.md" "查看首页组件文档"
+    click Q "./src/store/CLAUDE.md" "查看状态管理文档"
+    click R "./src/services/CLAUDE.md" "查看服务层文档"
+    click S "./src/types/CLAUDE.md" "查看类型定义文档"
 ```
 
 ## 模块索引
 
 | 模块 | 路径 | 职责 | 入口文件 |
 |------|------|------|----------|
+| 首页欢迎面板 | `src/app/main` | 欢迎问候、统计卡片、最近活动 | `page.tsx` |
 | 登录认证 | `src/app/auth/login` | 用户登录、Token 管理 | `page.tsx` |
 | 对话系统 | `src/app/main/chat` | AI 对话、会话管理、消息渲染 | `layout.tsx` |
-| 智能体中心 | `src/app/main/agent-hub` | Agent 配置、Prompt 管理、MCP 工具绑定 | `page.tsx` |
+| 智能体中心 | `src/app/main/agent-hub` | Agent 配置、Prompt 管理、工具绑定 | `page.tsx` |
 | 任务控制台 | `src/app/main/task` | 任务执行、执行时间线、历史记录、执行控制 | `page.tsx` |
 | 博客系统 | `src/app/main/blog` | 博客文章展示 | `page.tsx` |
 | API 代理 | `src/app/api/proxy` | 后端请求转发、统一代理 | `route.ts` |
 | 布局组件 | `src/app/main/components/layout` | 侧边栏、顶部栏、折叠控制 | `AppSidebar.tsx`, `AppTopBar.tsx` |
+| 首页组件 | `src/app/main/components/home` | 统计卡片、最近活动列表 | `StatCard.tsx`, `RecentActivity.tsx` |
 | UI 组件库 | `src/components/ui` | 基础 UI 组件封装 | - |
 | 状态管理 | `src/store` | Zustand 全局状态 | `auth.ts`, `sidebar.ts` |
-| 服务层 | `src/services` | API 服务封装 | `auth.service.ts`, `chat.service.ts` |
+| 服务层 | `src/services` | API 服务封装 | `auth.service.ts`, `chat.service.ts`, `agent.service.ts` |
 | 类型定义 | `src/types` | TypeScript 类型 | `auth.ts`, `conversation.ts`, `task.ts`, `agent.ts` |
 | Hooks | `src/hooks` | 自定义 React Hooks | `useAuth.ts` |
 | 工具库 | `src/lib` | HTTP 请求、工具函数 | `http.ts`, `utils.ts` |
@@ -154,7 +162,7 @@ pnpm lint
 |------|------|----------|
 | `/` | 根页面 (自动跳转) | Token 检测 |
 | `/auth/login` | 登录页 | 公开 |
-| `/main` | 主页 | 需登录 |
+| `/main` | 首页欢迎面板 | 需登录 |
 | `/main/chat` | 对话 | 需登录 |
 | `/main/task` | 任务控制台 | 需登录 |
 | `/main/agent-hub` | 智能体中心 | 需登录 |
@@ -274,6 +282,7 @@ export const chatService = {
 | `src/hooks/useAuth.ts` | 认证 Hook，封装登录/登出逻辑 |
 | `src/services/auth.service.ts` | 认证 API 服务 |
 | `src/services/chat.service.ts` | 聊天 API 服务 |
+| `src/services/agent.service.ts` | 智能体 API 服务 |
 | `src/types/` | 全局类型定义 |
 | `src/app/api/proxy/[...path]/route.ts` | 后端代理，所有 `/api/proxy/*` 请求转发到后端 |
 | `src/app/main/layout.tsx` | 主布局，定义侧边栏 + 顶栏 + 内容区结构，支持侧边栏折叠 |
@@ -293,6 +302,31 @@ export const chatService = {
 8. 新增全局类型应在 `src/types/` 中定义
 
 ## 变更记录 (Changelog)
+
+### 2026-03-25 - 首页欢迎面板与 Agent Hub 重构
+
+- **首页新增欢迎面板**
+  - 新增 `src/app/main/page.tsx` 首页
+  - 新增 `src/app/main/components/home/` 组件目录
+  - `StatCard.tsx` - 统计卡片组件
+  - `RecentActivity.tsx` - 最近活动列表组件
+  - `types.ts` - 首页类型定义
+- **Agent Hub 模块重构**
+  - 对接后端 API，实现完整 CRUD 功能
+  - 新增 `agent.service.ts` 服务
+  - 重构类型定义：`AgentListItem`, `AgentDetail`, `AgentRequest`, `AgentTool`, `Model`
+  - 新增 `AgentFormSheet.tsx` - 创建/编辑表单抽屉
+  - 新增 `AgentFormContent.tsx` - 表单内容组件
+  - 新增 `AgentCard.tsx` - Agent 卡片组件（重构版）
+  - 新增 `DeleteConfirmDialog.tsx` - 删除确认对话框
+  - 保留 `mocks.ts` 作为开发测试数据
+- **新增 UI 组件**
+  - `slider.tsx` - 滑块组件
+  - `checkbox.tsx` - 复选框组件
+  - `select.tsx` - 选择器组件
+  - `switch.tsx` - 开关组件
+- **更新服务层导出**
+  - `src/services/index.ts` 暂未导出 agentService（需手动导入）
 
 ### 2026-03-22 - 引入 Zustand 统一状态管理
 
